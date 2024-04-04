@@ -1,6 +1,6 @@
 ﻿using LS.DAL.Helper;
 
-namespace LS.BLL.Services
+namespace LS.BLL.Repositories
 {
     public interface IEmailService
     {

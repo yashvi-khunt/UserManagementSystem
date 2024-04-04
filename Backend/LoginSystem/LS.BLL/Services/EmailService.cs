@@ -1,4 +1,5 @@
-﻿using LS.DAL.Helper;
+﻿using LS.BLL.Repositories;
+using LS.DAL.Helper;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;

@@ -10,16 +10,16 @@ namespace LS.DAL.ViewModels
 {
     public class Response : Response<object>
     {
-        public Response(MESSAGE message, bool IsSuccess = true) : base(message, IsSuccess)
+        public Response(MESSAGE message, bool isSuccess = true) : base(message, isSuccess)
         {
         }
 
         public Response() : base() { }
 
-        public Response(string message, bool IsSuccess = true) : base(message, IsSuccess)
+        public Response(string message, bool isSuccess = true) : base(message, isSuccess)
         {
             Message = message;
-            Success = IsSuccess;
+            Success = isSuccess;
         }
     }
 
@@ -47,16 +47,16 @@ namespace LS.DAL.ViewModels
             error = new ResponseError();
         }
 
-        public Response(MESSAGE message, bool IsSuccess = true)
+        public Response(MESSAGE message, bool isSuccess = true)
         {
-            Success = IsSuccess;
+            Success = isSuccess;
             Message = GetEnumDescription(message);
         }
 
-        public Response(string message, bool IsSuccess = true)
+        public Response(string message, bool isSuccess = true)
         {
             Message = message;
-            Success = IsSuccess;
+            Success = isSuccess;
         }
 
         public Response(T data, bool isSuccess, MESSAGE message)
@@ -66,16 +66,16 @@ namespace LS.DAL.ViewModels
             Data = data;
         }
 
-        public void UpdateStatus(MESSAGE message, bool IsSuccess = false)
+        public void UpdateStatus(MESSAGE message, bool isSuccess = false)
         {
-            Success = IsSuccess;
+            Success = isSuccess;
             Message = GetEnumDescription(message);
         }
 
-        public void UpdateStatus(string message, bool IsSuccess = false)
+        public void UpdateStatus(string message, bool isSuccess = false)
         {
             Message = message;
-            Success = IsSuccess;
+            Success = isSuccess;
         }
 
         public string GetEnumDescription(Enum enumValue)
