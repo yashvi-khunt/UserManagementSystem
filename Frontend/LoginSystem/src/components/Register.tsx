@@ -1,23 +1,20 @@
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { useForm } from "react-hook-form";
+import { FormInputText } from "./form/FormInputText";
 
 export default function Register() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const { handleSubmit, register, watch, control } = useForm();
+
+  const onSubmit = (data: unknown) => {
+    console.log(data);
   };
 
   return (
@@ -37,38 +34,60 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+              <FormInputText
+                control={control}
+                {...register("email", { required: true })}
+                label="Email"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
+              <FormInputText
+                control={control}
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "Password field is required.",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@+._-])[a-zA-Z@+._-\d]{8,}$/,
+                    message:
+                      "Password should have atleast one uppercase,one lowercase, one special character and should be of the minimum length 8.",
+                  },
+                })}
                 label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="confirm-password"
-                label="Confirm Password"
-                type="password"
-                id="confirm-password"
-                autoComplete="new-password"
+              <FormInputText
+                control={control}
+                {...register("confirm-password", { required: true })}
+                label="Confirm password"
+                {...register("confirm-password", {
+                  required: {
+                    value: true,
+                    message: "Confirm Password field is required.",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@+._-])[a-zA-Z@+._-\d]{8,}$/,
+                    message:
+                      "Password should have atleast one uppercase,one lowercase, one special character and should be of the minimum length 8.",
+                  },
+                  validate: (val: string) => {
+                    if (watch("password") != val) {
+                      return "Password and Confirm password should be same.";
+                    }
+                  },
+                })}
               />
             </Grid>
           </Grid>
@@ -82,7 +101,7 @@ export default function Register() {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/auth/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

@@ -57,7 +57,7 @@ namespace LS.BLL.Services
             var userExists = await _userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
             {
-                return new { Success = false, Message = "User with the same email already exists" };
+                return (Success: false, Message: "User with the same email already exists");
             }
 
             var user = new ApplicationUser
@@ -71,7 +71,7 @@ namespace LS.BLL.Services
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                return new { Success = false, Message = string.Join(", ", result.Errors) };
+                return (Success: false, Message: string.Join(", ", result.Errors));
             }
 
             try
@@ -86,11 +86,11 @@ namespace LS.BLL.Services
                     Body = $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.",
                 });
 
-                return new { Success = true, Message = "User created successfully!" };
+                return (Success: true, Message: "User created successfully!");
             }
             catch (Exception ex)
             {
-                return new { Success = false, Message = ex.Message };
+                return (Success: false, Message: ex.Message);
             }
         }
 
