@@ -24,7 +24,7 @@ namespace LoginSystem.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] VMLogin model)
         {
             var result = await _authService.Login(model);
             return Ok(result);
@@ -32,17 +32,26 @@ namespace LoginSystem.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] VMRegister model)
         {
             var result = await _authService.Register(model);
+
             return Ok(result);
         }
 
         [HttpGet("confirmUserEmail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        public async Task<IActionResult> ConfirmEmail([FromQuery]VMConfirmEmail model)
         {
-            var result = await _authService.ConfirmEmail(userId, token);
-            return Ok(result);
+            var result = await _authService.ConfirmEmail(model);
+            if (!result.Success)
+            {
+                return Ok(result);
+
+            }
+            else
+            {
+                return Redirect("http://localhost:5173/");
+            }
         }
 
     }

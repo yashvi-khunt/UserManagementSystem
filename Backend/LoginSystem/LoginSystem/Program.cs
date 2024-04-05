@@ -36,10 +36,13 @@ namespace LoginSystem
             //Email Configuration
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
             builder.Services.AddTransient<IEmailService, EmailService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
 
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
+                options.SignIn.RequireConfirmedEmail = true;
+
                 // Default Password settings.
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -49,6 +52,7 @@ namespace LoginSystem
                 options.Password.RequiredUniqueChars = 1;
             });
 
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(1));
 
             // Adding Authentication
             builder.Services.AddAuthentication(options =>

@@ -25,7 +25,7 @@ namespace LS.BLL.Services
             _emailService = emailService;
         }
 
-        public async Task<object> Login(LoginModel model)
+        public async Task<object> Login(VMLogin model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
 
@@ -52,7 +52,7 @@ namespace LS.BLL.Services
             };
         }
 
-        public async Task<object> Register(RegisterModel model)
+        public async Task<object> Register(VMRegister model)
         {
             var userExists = await _userManager.FindByEmailAsync(model.Email);
             if (userExists != null)
@@ -94,22 +94,22 @@ namespace LS.BLL.Services
             }
         }
 
-        public async Task<object> ConfirmEmail(string userId, string token)
+        public async Task<Response> ConfirmEmail(VMConfirmEmail model)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
-                return new { Success = false, Message = "User not found" };
+                return new Response{ Success = false, Message = "User not found" };
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user, model.Token);
             if (result.Succeeded)
             {
-                return new { Success = true, Message = "Email confirmed successfully" };
+                return new Response{ Success = true, Message = "Email confirmed successfully" };
             }
             else
             {
-                return new { Success = false, Message = "Failed to confirm email" };
+                return new Response{ Success = false, Message = "Failed to confirm email" };
             }
         }
     }

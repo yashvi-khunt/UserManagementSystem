@@ -9,8 +9,10 @@ namespace LS.BLL.Repositories
 {
     public interface IAuthService
     {
-        Task<object> Login(LoginModel model);
-        Task<object> Register(RegisterModel model);
-        Task<object> ConfirmEmail(string userId, string token);
+        Task<object> Login(VMLogin model);
+        Task<object> Register(VMRegister model);
+        Task<Response> ConfirmEmail(VMConfirmEmail model);
+
+        //Task<object> ConfirmPassword();
     }
 }

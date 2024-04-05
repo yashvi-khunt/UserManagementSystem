@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LS.DAL.ViewModels
 {
-    public class LoginModel
+    public class VMLogin
     {
         [EmailAddress]
         [Required(ErrorMessage = "Email is required")]

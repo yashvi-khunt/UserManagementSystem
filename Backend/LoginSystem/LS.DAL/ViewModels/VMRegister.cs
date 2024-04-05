@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LS.DAL.ViewModels
 {
-    public class RegisterModel
+    public class VMRegister
     {
         [EmailAddress]
         [Required(ErrorMessage = "Email is required")]
