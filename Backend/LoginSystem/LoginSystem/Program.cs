@@ -129,6 +129,9 @@ namespace LoginSystem
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAllOrigins");
+
+
             app.UseAuthorization();
 
 

@@ -28,7 +28,7 @@ namespace LS.DAL.ViewModels
         public bool Success { get; set; } = true;
         public T? Data { get; set; }
         public string? Message { get; set; }
-        public ResponseError? error { get; set; }
+        
 
         public override string ToString()
         {
@@ -42,11 +42,7 @@ namespace LS.DAL.ViewModels
             Message = GetEnumDescription(MESSAGE.LOADED);
         }
 
-        public Response()
-        {
-            error = new ResponseError();
-        }
-
+      
         public Response(MESSAGE message, bool isSuccess = true)
         {
             Success = isSuccess;
@@ -64,6 +60,10 @@ namespace LS.DAL.ViewModels
             Message = GetEnumDescription(message);
             Success = isSuccess;
             Data = data;
+        }
+
+        public Response()
+        {
         }
 
         public void UpdateStatus(MESSAGE message, bool isSuccess = false)

@@ -34,6 +34,11 @@ namespace LoginSystem.Controllers
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
 
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, new Response("Username or Password is incorrect", false));
+            }
+
             if (!user.EmailConfirmed)
             {
                 // User's email is not confirmed
@@ -41,12 +46,12 @@ namespace LoginSystem.Controllers
             }
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            {   
+            {
                 // Create a JWT token
                 var token = GenerateJwtToken(user);
 
                 // Return a successful response with the generated token and its expiration
-                return Ok(new {token});
+                return Ok(new { token });
             }
             else
             {
@@ -131,7 +136,7 @@ namespace LoginSystem.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody]VMForgotPassword model)
+        public async Task<IActionResult> ForgotPassword([FromBody] VMForgotPassword model)
         {
             //var user = await _userManager.FindByEmailAsync(model.Email);
             var user = await _userManager.FindByEmailAsync("user@example.com");
@@ -160,8 +165,8 @@ namespace LoginSystem.Controllers
             }
         }
 
-        [HttpGet("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromQuery]VMResetPassword model)
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] VMResetPassword model)
         {
 
             //add token expiry code
@@ -170,15 +175,27 @@ namespace LoginSystem.Controllers
             var user = await _userManager.FindByEmailAsync("user@example.com");
             if (user != null)
             {
-                await _userManager.ResetPasswordAsync(user,model.Token,model.NewPassword);
+               
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
 
-                return Ok(new Response("Password Updated Successfully", true));
+               if(result.Succeeded) return Ok(new Response("Password Updated Successfully", true));
+
+                if (!result.Succeeded)
+                {
+                    var message = String.Empty;
+                    foreach (var error in result.Errors)
+                    {
+                        message += error.Description;
+                    }
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response(message, false));
+                }
+
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong, Please try again.", false));
 
         }
-        
+
         private string GenerateJwtToken(ApplicationUser user)
         {
             // Get the JWT secret key and token validity duration from configuration
