@@ -68,30 +68,30 @@ namespace LoginSystem.Controllers
             if (userExists != null) return StatusCode(StatusCodes.Status500InternalServerError, new Response("User with same email already exists.", false));
 
 
-            ApplicationUser user = new ApplicationUser()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                EmailConfirmed = false,
-            };
+            //ApplicationUser user = new ApplicationUser()
+            //{
+            //    UserName = model.Email,
+            //    Email = model.Email,
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    EmailConfirmed = false,
+            //};
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            //var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (!result.Succeeded)
-            {
-                var message = String.Empty;
-                foreach (var error in result.Errors)
-                {
-                    message += error.Description;
-                }
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response(message, false));
-            }
+            //if (!result.Succeeded)
+            //{
+            //    var message = String.Empty;
+            //    foreach (var error in result.Errors)
+            //    {
+            //        message += error.Description;
+            //    }
+            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response(message, false));
+            //}
 
             try
             {
                 //temporary
-                //var user = await _userManager.FindByEmailAsync("user@example.com");
+                var user = await _userManager.FindByEmailAsync("user@example.com");
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -147,7 +147,7 @@ namespace LoginSystem.Controllers
 
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                var resetLink = $"http://localhost:5173/api/auth/resetPassword?userEmail={user.Email}&token={token}";
+                var resetLink = $"http://localhost:5173/auth/reset-password?userEmail={user.Email}&token={token}";
 
                 MailRequest mailRequest = new MailRequest()
                 {
@@ -171,8 +171,8 @@ namespace LoginSystem.Controllers
 
             //add token expiry code
 
-            //var user = await _userManager.FindByEmailAsync(model.Email);
-            var user = await _userManager.FindByEmailAsync("user@example.com");
+            var user = await _userManager.FindByEmailAsync(model.Email);
+           
             if (user != null)
             {
                

@@ -4,7 +4,8 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import Profile from "../pages/Profile";
-import { Login, Protected, Register } from "../components";
+import { ForgotPassword, Login, Protected, Register } from "../components";
+import ResetPassword from "../components/ResetPassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,8 +21,8 @@ const router = createBrowserRouter(
       <Route path="auth">
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
-        <Route path="reset-password" />
-        <Route path="forgot-password" />
+        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="confirm-email" />
       </Route>
       <Route path="profile">

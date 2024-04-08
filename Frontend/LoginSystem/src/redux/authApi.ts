@@ -41,14 +41,14 @@ export const authApi = createApi({
       authTypes.apiResponse,
       authTypes.forgotPasswordParams
     >({
-      query: ({ email }) => ({
+      query: (data) => ({
         url: "Auth/forgot-password",
         method: "POST",
-        body: email,
+        body: data,
       }),
       invalidatesTags: ["User"],
     }),
-    resetPassword: builder.query<
+    resetPassword: builder.mutation<
       authTypes.apiResponse,
       authTypes.resetPasswordParams
     >({
@@ -65,6 +65,6 @@ export const {
   useLoginMutation,
   useConfirmEmailQuery,
   useForgotPasswordMutation,
-  useResetPasswordQuery,
+  useResetPasswordMutation,
   useRegisterMutation,
 } = authApi;

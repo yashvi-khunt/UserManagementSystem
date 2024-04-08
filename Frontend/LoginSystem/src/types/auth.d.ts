@@ -17,7 +17,7 @@ declare namespace authTypes {
 
   type resetPasswordParams = {
     email: string;
-    password: string;
+    newPassword: string;
     token: string;
   };
 

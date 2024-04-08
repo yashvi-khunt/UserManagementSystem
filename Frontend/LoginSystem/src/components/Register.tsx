@@ -41,8 +41,10 @@ export default function Register() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+          <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
+            <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
+              <LockOutlinedIcon htmlColor="#7d56d4" />
+            </Avatar>
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
@@ -117,7 +119,7 @@ export default function Register() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
             >
               Sign Up
             </Button>

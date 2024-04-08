@@ -4,23 +4,31 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
-import { useLoginMutation } from "../redux/authApi";
 import { FormInputPassword } from "./form/FormPasswordField";
+import { useResetPasswordMutation } from "../redux/authApi";
+import { useEffect } from "react";
+import { ArrowBack, KeyRounded } from "@mui/icons-material";
+import { useSearchParams } from "react-router-dom";
 
-export default function Login() {
-  const { handleSubmit, register, control } = useForm();
-
-  const [loginApi, { data: loginResponse, error }] = useLoginMutation();
+export default function ResetPassword() {
+  const { handleSubmit, register, watch, control } = useForm();
+  const [resetApi, { data, error }] = useResetPasswordMutation();
+  const [searchParams] = useSearchParams();
 
   const onSubmit = (data: unknown) => {
-    loginApi(data as authTypes.loginRegisterParams);
-    // console.log(data);
+    resetApi({
+      newPassword: data.password,
+      email: searchParams.get("userEmail"),
+      token: searchParams.get("token")?.split(" ").join("+"),
+    } as authTypes.resetPasswordParams);
   };
+
+  useEffect(() => {
+    console.log(data, error);
+  }, [data?.success, error?.data]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -35,11 +43,11 @@ export default function Login() {
       >
         <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
           <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <LockOutlinedIcon htmlColor="#7d56d4" />
+            <KeyRounded htmlColor="#7d56d4" />
           </Avatar>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Set new password
         </Typography>
         <Box
           component="form"
@@ -48,22 +56,6 @@ export default function Login() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormInputText
-                control={control}
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Email field is required.",
-                  },
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Please enter a valid email address.",
-                  },
-                })}
-                label="Email"
-              />
-            </Grid>
             <Grid item xs={12}>
               <FormInputPassword
                 control={control}
@@ -82,11 +74,30 @@ export default function Login() {
                 label="Password"
               />
             </Grid>
-            {error && (
-              <Grid item xs={12} textAlign="center" color="red">
-                {error?.data.message}
-              </Grid>
-            )}
+            <Grid item xs={12}>
+              <FormInputPassword
+                control={control}
+                {...register("confirm-password", { required: true })}
+                label="Confirm password"
+                {...register("confirm-password", {
+                  required: {
+                    value: true,
+                    message: "Confirm Password field is required.",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@+._-])[a-zA-Z@+._-\d]{8,}$/,
+                    message:
+                      "Password should have atleast one uppercase,one lowercase, one special character and should be of the minimum length 8.",
+                  },
+                  validate: (val: string) => {
+                    if (watch("password") != val) {
+                      return "Password and Confirm password should be same.";
+                    }
+                  },
+                })}
+              />
+            </Grid>
           </Grid>
           <Button
             type="submit"
@@ -94,17 +105,18 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
           >
-            Sign in
+            Reset Password
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/auth/forgot-password" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/auth/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link
+                href="/auth/login"
+                sx={{ textDecoration: "none", color: "gray" }}
+                variant="body2"
+              >
+                <Box justifyContent="center" display="flex" gap={0.2}>
+                  <ArrowBack fontSize="small" color="inherit" /> Back to login
+                </Box>
               </Link>
             </Grid>
           </Grid>

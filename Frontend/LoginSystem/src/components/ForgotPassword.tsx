@@ -4,23 +4,33 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
-import { useLoginMutation } from "../redux/authApi";
-import { FormInputPassword } from "./form/FormPasswordField";
+import { useForgotPasswordMutation } from "../redux/authApi";
+import { ArrowBack, KeyRounded } from "@mui/icons-material";
+import { useEffect } from "react";
 
 export default function Login() {
   const { handleSubmit, register, control } = useForm();
 
-  const [loginApi, { data: loginResponse, error }] = useLoginMutation();
+  const [forgotPasswordApi, { data, error }] = useForgotPasswordMutation();
 
   const onSubmit = (data: unknown) => {
-    loginApi(data as authTypes.loginRegisterParams);
-    // console.log(data);
+    console.log(data as authTypes.forgotPasswordParams);
+    forgotPasswordApi(data as authTypes.forgotPasswordParams);
+
+    //redirect to success page on success
   };
+
+  useEffect(() => {
+    //navigate to some page
+  }, [data?.data]);
+
+  useEffect(() => {
+    console.log(error?.data.message);
+  }, [error?.data]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -31,21 +41,26 @@ export default function Login() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          width: "100%",
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
           <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <LockOutlinedIcon htmlColor="#7d56d4" />
+            <KeyRounded htmlColor="#7d56d4" />
           </Avatar>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Forgot Password
+        </Typography>
+        <Typography component="h6" variant="body2" marginTop={1}>
+          No worries, we'll send you reset instructions.
         </Typography>
         <Box
           component="form"
           noValidate
           onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 3 }}
+          width="100%"
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -64,29 +79,6 @@ export default function Login() {
                 label="Email"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormInputPassword
-                control={control}
-                {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Password field is required.",
-                  },
-                  pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@+._-])[a-zA-Z@+._-\d]{8,}$/,
-                    message:
-                      "Password should have atleast one uppercase,one lowercase, one special character and should be of the minimum length 8.",
-                  },
-                })}
-                label="Password"
-              />
-            </Grid>
-            {error && (
-              <Grid item xs={12} textAlign="center" color="red">
-                {error?.data.message}
-              </Grid>
-            )}
           </Grid>
           <Button
             type="submit"
@@ -94,17 +86,18 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
           >
-            Sign in
+            Reset Password
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/auth/forgot-password" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/auth/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link
+                href="/auth/login"
+                sx={{ textDecoration: "none", color: "gray" }}
+                variant="body2"
+              >
+                <Box justifyContent="center" display="flex" gap={0.2}>
+                  <ArrowBack fontSize="small" color="inherit" /> Back to login
+                </Box>
               </Link>
             </Grid>
           </Grid>
