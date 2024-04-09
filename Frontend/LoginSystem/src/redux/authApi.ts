@@ -1,9 +1,21 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  RootState,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:5041/api/",
+    prepareHeaders: (headers, { getState }) => {
+      const { userToken: token } = (getState() as RootState).auth;
+
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
@@ -58,6 +70,24 @@ export const authApi = createApi({
         body: data,
       }),
     }),
+    userDetails: builder.query<authTypes.userDetails, string>({
+      query: (email) => ({
+        url: `Auth/details/${email}`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+    editUser: builder.mutation<
+      authTypes.apiResponse,
+      authTypes.updateUserProps
+    >({
+      query: (data) => ({
+        url: `Auth/edit/${data.email}`,
+        method: "PUT",
+        body: { firstName: data.firstName, lastName: data.lastName },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -67,4 +97,6 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useRegisterMutation,
+  useUserDetailsQuery,
+  useEditUserMutation,
 } = authApi;

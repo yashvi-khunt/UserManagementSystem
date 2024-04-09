@@ -26,4 +26,15 @@ declare namespace authTypes {
     data: object;
     message: string;
   };
+
+  type userDetails = {
+    firstName: string | null;
+    lastName: string | null;
+  };
+
+  type updateUserProps = {
+    email: string;
+    firstName?: string;
+    lastName?: string;
+  };
 }

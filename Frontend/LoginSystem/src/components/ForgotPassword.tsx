@@ -10,29 +10,38 @@ import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
 import { useForgotPasswordMutation } from "../redux/authApi";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import PasswordEmailSent from "./PasswordEmailSent";
 
 export default function Login() {
   const { handleSubmit, register, control } = useForm();
 
+  const [mailSent, setMailSent] = useState(false);
+  const [edata, setData] = useState<authTypes.forgotPasswordParams>({
+    email: "",
+  });
+
   const [forgotPasswordApi, { data, error }] = useForgotPasswordMutation();
 
   const onSubmit = (data: unknown) => {
-    console.log(data as authTypes.forgotPasswordParams);
+    //console.log(data as authTypes.forgotPasswordParams);
+    setData(data as authTypes.forgotPasswordParams);
     forgotPasswordApi(data as authTypes.forgotPasswordParams);
-
-    //redirect to success page on success
   };
 
   useEffect(() => {
-    //navigate to some page
+    setMailSent(false);
+  }, []);
+
+  useEffect(() => {
+    if (data?.success) setMailSent(true);
   }, [data?.data]);
 
   useEffect(() => {
     console.log(error?.data.message);
   }, [error?.data]);
 
-  return (
+  return !mailSent ? (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
@@ -104,5 +113,7 @@ export default function Login() {
         </Box>
       </Box>
     </Container>
+  ) : (
+    <PasswordEmailSent email={edata.email} />
   );
 }

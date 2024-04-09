@@ -1,10 +1,12 @@
 ﻿using LS.BLL.Repositories;
 using LS.DAL.Helper;
 using LS.DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace LoginSystem.Controllers
@@ -47,8 +49,11 @@ namespace LoginSystem.Controllers
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                var authClaims = new List<Claim> { new Claim(ClaimTypes.Email, user.Email) };
+
+
                 // Create a JWT token
-                var token = GenerateJwtToken(user);
+                var token = GenerateJwtToken(user, authClaims);
 
                 // Return a successful response with the generated token and its expiration
                 return Ok(new { token });
@@ -57,6 +62,46 @@ namespace LoginSystem.Controllers
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, new Response("Username or Password is incorrect", false));
             }
+        }
+
+        [Authorize]
+        [HttpGet("details/{email}")]
+        public async Task<IActionResult> GetUserDetails(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var userDetails = new VMUserDetails()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            };
+            return Ok(userDetails);
+        }
+
+        [Authorize]
+        [HttpPut("edit/{email}")]
+        public async Task<IActionResult> EditUserDetails(string email, VMUpdateUser newModel)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (newModel.FirstName != null) user.FirstName = newModel.FirstName;
+                if (newModel.LastName != null) user.LastName = newModel.LastName;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return Ok(new Response("User updated successfully", true));
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.", false));
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.", false));
+            }
+
         }
 
         [HttpPost]
@@ -68,30 +113,30 @@ namespace LoginSystem.Controllers
             if (userExists != null) return StatusCode(StatusCodes.Status500InternalServerError, new Response("User with same email already exists.", false));
 
 
-            //ApplicationUser user = new ApplicationUser()
-            //{
-            //    UserName = model.Email,
-            //    Email = model.Email,
-            //    SecurityStamp = Guid.NewGuid().ToString(),
-            //    EmailConfirmed = false,
-            //};
+            ApplicationUser user = new ApplicationUser()
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = false,
+            };
 
-            //var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-            //if (!result.Succeeded)
-            //{
-            //    var message = String.Empty;
-            //    foreach (var error in result.Errors)
-            //    {
-            //        message += error.Description;
-            //    }
-            //    return StatusCode(StatusCodes.Status500InternalServerError, new Response(message, false));
-            //}
+            if (!result.Succeeded)
+            {
+                var message = String.Empty;
+                foreach (var error in result.Errors)
+                {
+                    message += error.Description;
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response(message, false));
+            }
 
             try
             {
                 //temporary
-                var user = await _userManager.FindByEmailAsync("user@example.com");
+                //var user = await _userManager.FindByEmailAsync("user@example.com");
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -172,13 +217,13 @@ namespace LoginSystem.Controllers
             //add token expiry code
 
             var user = await _userManager.FindByEmailAsync(model.Email);
-           
+
             if (user != null)
             {
-               
-                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
 
-               if(result.Succeeded) return Ok(new Response("Password Updated Successfully", true));
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+
+                if (result.Succeeded) return Ok(new Response("Password Updated Successfully", true));
 
                 if (!result.Succeeded)
                 {
@@ -196,7 +241,7 @@ namespace LoginSystem.Controllers
 
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        private string GenerateJwtToken(ApplicationUser user, List<Claim> claims)
         {
             // Get the JWT secret key and token validity duration from configuration
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -205,6 +250,7 @@ namespace LoginSystem.Controllers
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JWT:TokenValidityInMinutes"])),
+                claims: claims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
 

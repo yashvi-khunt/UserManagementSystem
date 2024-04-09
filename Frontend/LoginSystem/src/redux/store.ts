@@ -1,9 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
 import { authApi } from "./authApi";
+import snackbarSlice from "./snackbarSlice";
 
 export const store = configureStore({
-  reducer: { auth: authSlice, [authApi.reducerPath]: authApi.reducer },
+  reducer: {
+    auth: authSlice,
+    snackbar: snackbarSlice,
+    [authApi.reducerPath]: authApi.reducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([authApi.middleware]),
 });

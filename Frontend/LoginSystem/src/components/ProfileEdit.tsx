@@ -1,44 +1,47 @@
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
-import { useLoginMutation } from "../redux/authApi";
-import { FormInputPassword } from "./form/FormPasswordField";
-import { login } from "../redux/authSlice";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useEditUserMutation, useUserDetailsQuery } from "../redux/authApi";
 import { useNavigate } from "react-router-dom";
+import { ArrowBack, Edit } from "@mui/icons-material";
+import { useAppSelector } from "../redux/hooks";
+import { useEffect } from "react";
+import { Link } from "@mui/material";
 
-export default function Login() {
+export default function ProfileEdit() {
   const { handleSubmit, register, control } = useForm();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loginApi, { data: loginResponse, error }] = useLoginMutation();
+  const [updateApi, { data: updateResponse, error }] = useEditUserMutation();
 
-  const onSubmit = (data: unknown) => {
-    loginApi(data as authTypes.loginRegisterParams);
+  const userEmail = useAppSelector((state) => state.auth.userEmail);
+  const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
+
+  const onSubmit = (data: object) => {
+    updateApi({
+      ...data,
+      email: userEmail,
+    } as authTypes.updateUserProps);
   };
 
   useEffect(() => {
-    if (loginResponse?.token) {
-      dispatch(login(loginResponse.token));
+    if (updateResponse?.success) {
+      //open snackbar
       navigate("/profile");
     }
-  }, [loginResponse]);
+  }, [updateResponse?.data]);
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container maxWidth="xs">
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 16,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -46,11 +49,11 @@ export default function Login() {
       >
         <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
           <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <LockOutlinedIcon htmlColor="#7d56d4" />
+            <Edit htmlColor="#7d56d4" />
           </Avatar>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Edit Profile
         </Typography>
         <Box
           component="form"
@@ -62,35 +65,27 @@ export default function Login() {
             <Grid item xs={12}>
               <FormInputText
                 control={control}
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Email field is required.",
-                  },
+                value={userDetails?.firstName}
+                {...register("firstName", {
                   pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Please enter a valid email address.",
+                    value: /^[a-zA-Z]*$/,
+                    message: "Name should contain alphabets only.",
                   },
                 })}
-                label="Email"
+                label="First name"
               />
             </Grid>
             <Grid item xs={12}>
-              <FormInputPassword
+              <FormInputText
                 control={control}
-                {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Password field is required.",
-                  },
+                value={userDetails?.lastName}
+                {...register("lastName", {
                   pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@+._-])[a-zA-Z@+._-\d]{8,}$/,
-                    message:
-                      "Password should have atleast one uppercase,one lowercase, one special character and should be of the minimum length 8.",
+                    value: /^[a-zA-Z]*$/,
+                    message: "Name should contain alphabets only.",
                   },
                 })}
-                label="Password"
+                label="Last name"
               />
             </Grid>
             {error && (
@@ -99,23 +94,25 @@ export default function Login() {
               </Grid>
             )}
           </Grid>
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
           >
-            Sign in
+            Edit Profile
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="/auth/forgot-password" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="/auth/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+              <Link
+                href="/profile"
+                sx={{ textDecoration: "none", color: "gray" }}
+                variant="body2"
+              >
+                <Box justifyContent="center" display="flex" gap={0.2}>
+                  <ArrowBack fontSize="small" color="inherit" /> Back to profile
+                </Box>
               </Link>
             </Grid>
           </Grid>

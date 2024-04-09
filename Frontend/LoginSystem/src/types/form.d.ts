@@ -3,5 +3,6 @@ declare namespace FormTypes {
     name: string;
     control: Control<unknown>;
     label: string;
+    value?: string | null | undefined;
   };
 }

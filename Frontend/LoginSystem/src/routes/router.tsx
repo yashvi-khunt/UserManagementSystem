@@ -6,6 +6,8 @@ import {
 import Profile from "../pages/Profile";
 import { ForgotPassword, Login, Protected, Register } from "../components";
 import ResetPassword from "../components/ResetPassword";
+import ProfileEdit from "../components/ProfileEdit";
+import ProfilePage from "../components/ProfilePage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,8 +27,30 @@ const router = createBrowserRouter(
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="confirm-email" />
       </Route>
-      <Route path="profile">
-        <Route path="edit/:id" />
+      <Route
+        path="profile"
+        element={
+          <Protected>
+            <Profile />
+          </Protected>
+        }
+      >
+        <Route
+          path="/profile"
+          element={
+            <Protected>
+              <ProfilePage />
+            </Protected>
+          }
+        />
+        <Route
+          path="/profile/edit"
+          element={
+            <Protected>
+              <ProfileEdit />
+            </Protected>
+          }
+        />
       </Route>
     </Route>
   )
