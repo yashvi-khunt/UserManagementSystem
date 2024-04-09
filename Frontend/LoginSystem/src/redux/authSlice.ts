@@ -20,7 +20,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      console.log(action.payload);
+      //console.log(action.payload);
       state.status = true;
       state.userToken = action.payload;
 
@@ -30,7 +30,7 @@ const authSlice = createSlice({
         token: action.payload,
         email: decode[tokenFields.email],
       };
-      console.log(user);
+      //console.log(user);
       state.userEmail = user.email;
       // Save user data to local storage
       localStorage.setItem("user", JSON.stringify(user));

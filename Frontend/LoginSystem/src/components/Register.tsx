@@ -13,23 +13,30 @@ import { FormInputPassword } from "./form/FormPasswordField";
 import { useRegisterMutation } from "../redux/authApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 export default function Register() {
   const { handleSubmit, register, watch, control } = useForm();
   const [registerApi, { data, error }] = useRegisterMutation();
-
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const onSubmit = (data: unknown) => {
-    console.log(data);
+    //console.log(data);
     setEmail(data.email);
     registerApi(data as authTypes.loginRegisterParams);
   };
 
   useEffect(() => {
-    console.log(data, error);
     if (data?.success)
       navigate(`/auth/confirm-email?mailSent=true&email=${email}`);
+
+    if (!error?.data.success) {
+      dispatch(
+        openSnackbar({ severity: "error", message: error.data.message })
+      );
+    }
   }, [data?.success, error?.data]);
 
   return (

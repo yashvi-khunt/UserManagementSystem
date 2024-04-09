@@ -40,6 +40,12 @@ export default function ResetPassword() {
       );
       navigate("/auth/login");
     }
+
+    if (!error?.data.success) {
+      dispatch(
+        openSnackbar({ severity: "error", message: error.data.message })
+      );
+    }
   }, [data?.data, error?.data]);
 
   return (

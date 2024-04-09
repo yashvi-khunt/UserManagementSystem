@@ -8,7 +8,6 @@ const Protected = ({ children, authentication = true }: PropsWithChildren) => {
   const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    console.log(authStatus);
     if (authentication && authStatus !== authentication) {
       navigate("/auth/login");
       // } else if (!authentication && authStatus !== authentication) {

@@ -12,6 +12,8 @@ import { useForgotPasswordMutation } from "../redux/authApi";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import PasswordEmailSent from "./PasswordEmailSent";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 export default function Login() {
   const { handleSubmit, register, control } = useForm();
@@ -22,6 +24,7 @@ export default function Login() {
   });
 
   const [forgotPasswordApi, { data, error }] = useForgotPasswordMutation();
+  const dispatch = useDispatch();
 
   const onSubmit = (data: unknown) => {
     //console.log(data as authTypes.forgotPasswordParams);
@@ -38,7 +41,13 @@ export default function Login() {
   }, [data?.data]);
 
   useEffect(() => {
-    console.log(error?.data.message);
+    // console.log(error?.data.message);
+    dispatch(
+      openSnackbar({
+        severity: "error",
+        message: error?.data.message,
+      })
+    );
   }, [error?.data]);
 
   return !mailSent ? (

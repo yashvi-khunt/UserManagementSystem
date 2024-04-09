@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const userEmail = useAppSelector((state) => state.auth.userEmail);
-  console.log(userEmail);
+  //console.log(userEmail);
   const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
 
   const firstNameInitial = userDetails?.firstName

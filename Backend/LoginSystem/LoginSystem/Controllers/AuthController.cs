@@ -25,6 +25,7 @@ namespace LoginSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -209,6 +210,8 @@ namespace LoginSystem.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return StatusCode(StatusCodes.Status202Accepted, new Response("Sent Email to user", false));
 
+            
+
             try
             {
 
@@ -216,11 +219,24 @@ namespace LoginSystem.Controllers
 
                 var resetLink = $"http://localhost:5173/auth/reset-password?userEmail={user.Email}&token={token}";
 
+                var emailTemplate = $@"
+                    <html>
+                    <head>
+                        <title>Password Reset Mail</title>
+                    </head>
+                    <body>
+                        <p>Hi {user.UserName},</p>
+                        <p>In order to change your password, you need to click on the below link.</p>
+                        <p>This link will redirect you to the password reset page <a href='{resetLink}'>Click here</a>.</p>
+                        <p>If you did not sign up for this account, you can ignore this email and the account will be deleted.</p>
+                    </body>
+                    </html>";
+
                 MailRequest mailRequest = new MailRequest()
                 {
                     RecipientEmail = model.Email,
                     Subject = "Password Reset Mail",
-                    Body = $"Please click on the following link to reset password.<a href='{resetLink}'>here</a>.",
+                    Body = emailTemplate,
                 };
 
                 await _emailService.SendEmailAsync(mailRequest);

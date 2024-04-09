@@ -38,8 +38,18 @@ export default function ProfileEdit() {
   };
 
   useEffect(() => {
+    if (!changeError.data.success)
+      openSnackbar({ severity: "error", message: changeError?.data.message });
+  }, [changeError?.data]);
+
+  useEffect(() => {
     if (updateResponse?.success) {
-      //open snackbar
+      dispatch(
+        openSnackbar({
+          severity: "sucess",
+          message: updateResponse.message,
+        })
+      );
       navigate("/profile");
     }
   }, [updateResponse?.data]);
