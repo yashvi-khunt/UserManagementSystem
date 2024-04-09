@@ -6,6 +6,7 @@ import {
   Container,
   CssBaseline,
   Grid,
+  Link,
   Typography,
 } from "@mui/material";
 import { useUserDetailsQuery } from "../redux/authApi";
@@ -48,44 +49,61 @@ const ProfilePage = () => {
               justifyContent="center"
               alignItems="center"
             >
-              {/* CARD HEADER START */}
-              <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
-                {/* PROFILE PHOTO */}
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  badgeContent={
-                    <Edit
-                      sx={{
-                        border: "5px solid white",
-                        backgroundColor: "#ff558f",
-                        borderRadius: "50%",
-                        padding: ".2rem",
-                        width: 35,
-                        height: 35,
-                        ":hover": { cursor: "pointer" },
-                      }}
-                      onClick={() => navigate("/profile/edit")}
-                    ></Edit>
-                  }
-                >
-                  <Avatar
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      mb: 1.5,
-                    }}
-                  >
-                    {initials}
-                  </Avatar>
-                </Badge>
+              {firstNameInitial !== "?" && lastNameInitial !== "?" ? (
+                <>
+                  <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+                    {/* PROFILE PHOTO */}
+                    <Badge
+                      overlap="circular"
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      badgeContent={
+                        <Edit
+                          sx={{
+                            border: "5px solid white",
+                            backgroundColor: "#ff558f",
+                            borderRadius: "50%",
+                            padding: ".2rem",
+                            width: 35,
+                            height: 35,
+                            ":hover": { cursor: "pointer" },
+                          }}
+                          onClick={() => navigate("/profile/edit")}
+                        ></Edit>
+                      }
+                    >
+                      <Avatar
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          mb: 1.5,
+                        }}
+                      >
+                        {initials}
+                      </Avatar>
+                    </Badge>
 
-                {/* DESCRIPTION */}
-                <Typography variant="h6">{userDetails?.firstName}</Typography>
-                <Typography color="text.secondary">
-                  {userDetails?.lastName}
-                </Typography>
-              </Grid>
+                    {/* DESCRIPTION */}
+
+                    <>
+                      <Typography variant="h6">
+                        {userDetails?.firstName}
+                      </Typography>
+                      <Typography color="text.secondary">
+                        {userDetails?.lastName}
+                      </Typography>
+                    </>
+                  </Grid>
+                </>
+              ) : (
+                <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
+                  <Grid item>No user details present.</Grid>
+                  <Grid item>
+                    <Link href="/profile/edit">
+                      Click here to add profile details.
+                    </Link>
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
           </Card>
         </Box>

@@ -31,14 +31,15 @@ export default function ResetPassword() {
   };
 
   useEffect(() => {
-    if (data?.success)
+    if (data?.success) {
       dispatch(
         openSnackbar({
           severity: "success",
           message: data.message,
         })
       );
-    navigate("/auth/login");
+      navigate("/auth/login");
+    }
   }, [data?.data, error?.data]);
 
   return (

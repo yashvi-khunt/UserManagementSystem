@@ -7,20 +7,28 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
-import { useEditUserMutation, useUserDetailsQuery } from "../redux/authApi";
+import {
+  useEditUserMutation,
+  useForgotPasswordMutation,
+  useUserDetailsQuery,
+} from "../redux/authApi";
 import { useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useEffect } from "react";
 import { Link } from "@mui/material";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 export default function ProfileEdit() {
   const { handleSubmit, register, control } = useForm();
   const navigate = useNavigate();
   const [updateApi, { data: updateResponse, error }] = useEditUserMutation();
+  const dispatch = useAppDispatch();
 
   const userEmail = useAppSelector((state) => state.auth.userEmail);
   const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
+  const [changePwd, { data: changeResponse, error: changeError }] =
+    useForgotPasswordMutation();
 
   const onSubmit = (data: object) => {
     updateApi({
@@ -35,6 +43,17 @@ export default function ProfileEdit() {
       navigate("/profile");
     }
   }, [updateResponse?.data]);
+
+  const handlePasswordChange = () => {
+    changePwd({ email: userEmail });
+  };
+
+  useEffect(() => {
+    if (changeResponse?.success)
+      dispatch(
+        openSnackbar({ severity: "success", message: changeResponse.message })
+      );
+  }, [changeResponse?.data]);
 
   return (
     <Container maxWidth="xs">
@@ -87,6 +106,11 @@ export default function ProfileEdit() {
                 })}
                 label="Last name"
               />
+            </Grid>
+            <Grid item xs textAlign="center">
+              <Link onClick={handlePasswordChange} variant="body2">
+                Change Password?
+              </Link>
             </Grid>
             {error && (
               <Grid item xs={12} textAlign="center" color="red">

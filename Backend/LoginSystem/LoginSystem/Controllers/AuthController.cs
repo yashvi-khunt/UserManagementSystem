@@ -2,12 +2,24 @@
 using LS.DAL.Helper;
 using LS.DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using System.ComponentModel;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
+using System.Xml;
 
 namespace LoginSystem.Controllers
 {
@@ -135,17 +147,29 @@ namespace LoginSystem.Controllers
 
             try
             {
-                
-
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var confirmationLink = Url.Action("ConfirmEmail", "Auth", new { userId = user.Id, token = token }, Request.Scheme);
+
+                // Constructing the email template
+                var emailTemplate = $@"
+                    <html>
+                    <head>
+                        <title>Confirmation Mail</title>
+                    </head>
+                    <body>
+                        <p>Hi {user.UserName},</p>
+                        <p>In order to start using your new account, you need to confirm your email address.</p>
+                        <p>Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.</p>
+                        <p>If you did not sign up for this account, you can ignore this email and the account will be deleted.</p>
+                    </body>
+                    </html>";
 
                 MailRequest mailRequest = new MailRequest()
                 {
                     RecipientEmail = model.Email,
                     Subject = "Confirmation Mail",
-                    Body = $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.",
+                    Body = emailTemplate,
                 };
 
                 await _emailService.SendEmailAsync(mailRequest);
@@ -153,7 +177,7 @@ namespace LoginSystem.Controllers
             }
             catch (Exception ex)
             {
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Failed to register user. Please try again later.", false));
             }
         }
 
