@@ -32,12 +32,12 @@ export default function Register() {
     if (data?.success)
       navigate(`/auth/confirm-email?mailSent=true&email=${email}`);
 
-    if (error?.data && !error?.data.success) {
-      console.log("he");
-      dispatch(
-        openSnackbar({ severity: "error", message: error?.data.message })
-      );
-    }
+    // if (error?.data && !error?.data.success) {
+    //   console.log("he");
+    //   dispatch(
+    //     openSnackbar({ severity: "error", message: error?.data.message })
+    //   );
+    // }
   }, [data?.data, error?.data.data]);
 
   return (

@@ -38,15 +38,15 @@ export default function ProfileEdit() {
   };
 
   useEffect(() => {
-    if (!changeError.data.success)
-      openSnackbar({ severity: "error", message: changeError?.data.message });
+    if (!changeError?.data.success)
+      openSnackbar({ severity: "error", message: changeError?.data?.message });
   }, [changeError?.data]);
 
   useEffect(() => {
     if (updateResponse?.success) {
       dispatch(
         openSnackbar({
-          severity: "sucess",
+          severity: "success",
           message: updateResponse.message,
         })
       );
