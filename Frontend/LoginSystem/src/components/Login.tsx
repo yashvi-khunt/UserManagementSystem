@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { useLoginMutation } from "../redux/authApi";
 import { FormInputPassword } from "./form/FormPasswordField";
 import { login } from "../redux/authSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -20,11 +20,17 @@ export default function Login() {
   const { handleSubmit, register, control } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loginApi, { data: loginResponse, error }] = useLoginMutation();
+  const [loginApi, { data: loginResponse, error: loginError }] =
+    useLoginMutation();
+  const [error, setError] = useState(null);
 
   const onSubmit = (data: unknown) => {
     loginApi(data as authTypes.loginRegisterParams);
   };
+
+  useEffect(() => {
+    setError(loginError?.data.message);
+  }, [loginError]);
 
   useEffect(() => {
     if (loginResponse?.token) {
@@ -32,6 +38,10 @@ export default function Login() {
       navigate("/profile");
     }
   }, [loginResponse]);
+
+  const clearError = () => {
+    setError(null);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,6 +67,7 @@ export default function Login() {
           noValidate
           onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 3 }}
+          onChange={clearError}
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -95,7 +106,7 @@ export default function Login() {
             </Grid>
             {error && (
               <Grid item xs={12} textAlign="center" color="red">
-                {error?.data.message}
+                {error}
               </Grid>
             )}
           </Grid>

@@ -11,10 +11,14 @@ import { FormInputPassword } from "./form/FormPasswordField";
 import { useResetPasswordMutation } from "../redux/authApi";
 import { useEffect } from "react";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch } from "../redux/hooks";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 export default function ResetPassword() {
   const { handleSubmit, register, watch, control } = useForm();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [resetApi, { data, error }] = useResetPasswordMutation();
   const [searchParams] = useSearchParams();
 
@@ -27,8 +31,15 @@ export default function ResetPassword() {
   };
 
   useEffect(() => {
-    console.log(data, error);
-  }, [data?.success, error?.data]);
+    if (data?.success)
+      dispatch(
+        openSnackbar({
+          severity: "success",
+          message: data.message,
+        })
+      );
+    navigate("/auth/login");
+  }, [data?.data, error?.data]);
 
   return (
     <Container component="main" maxWidth="xs">

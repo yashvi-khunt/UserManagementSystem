@@ -135,8 +135,7 @@ namespace LoginSystem.Controllers
 
             try
             {
-                //temporary
-                //var user = await _userManager.FindByEmailAsync("user@example.com");
+                
 
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -174,7 +173,7 @@ namespace LoginSystem.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, model.Token);
             if (result.Succeeded)
             {
-                return Redirect("http://localhost:5173/");
+                return Redirect("http://localhost:5173/auth/confirm-email");
             }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong", false));
@@ -183,8 +182,7 @@ namespace LoginSystem.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] VMForgotPassword model)
         {
-            //var user = await _userManager.FindByEmailAsync(model.Email);
-            var user = await _userManager.FindByEmailAsync("user@example.com");
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return StatusCode(StatusCodes.Status202Accepted, new Response("Sent Email to user", false));
 
             try
