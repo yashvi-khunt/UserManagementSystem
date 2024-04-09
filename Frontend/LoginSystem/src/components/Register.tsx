@@ -32,12 +32,13 @@ export default function Register() {
     if (data?.success)
       navigate(`/auth/confirm-email?mailSent=true&email=${email}`);
 
-    if (!error?.data.success) {
+    if (error?.data && !error?.data.success) {
+      console.log("he");
       dispatch(
-        openSnackbar({ severity: "error", message: error.data.message })
+        openSnackbar({ severity: "error", message: error?.data.message })
       );
     }
-  }, [data?.success, error?.data]);
+  }, [data?.data, error?.data.data]);
 
   return (
     <Container component="main" maxWidth="xs">

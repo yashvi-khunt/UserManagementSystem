@@ -40,10 +40,10 @@ export default function ResetPassword() {
       );
       navigate("/auth/login");
     }
-
-    if (!error?.data.success) {
+    if (error?.data && !error?.data.success) {
+      console.log("he");
       dispatch(
-        openSnackbar({ severity: "error", message: error.data.message })
+        openSnackbar({ severity: "error", message: error?.data.message })
       );
     }
   }, [data?.data, error?.data]);
