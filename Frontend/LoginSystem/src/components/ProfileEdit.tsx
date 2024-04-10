@@ -27,8 +27,6 @@ export default function ProfileEdit() {
 
   const userEmail = useAppSelector((state) => state.auth.userEmail);
   const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
-  const [changePwd, { data: changeResponse, error: changeError }] =
-    useForgotPasswordMutation();
 
   const onSubmit = (data: object) => {
     updateApi({
@@ -36,11 +34,6 @@ export default function ProfileEdit() {
       email: userEmail,
     } as authTypes.updateUserProps);
   };
-
-  useEffect(() => {
-    if (!changeError?.data.success)
-      openSnackbar({ severity: "error", message: changeError?.data?.message });
-  }, [changeError?.data]);
 
   useEffect(() => {
     if (updateResponse?.success) {
@@ -53,10 +46,6 @@ export default function ProfileEdit() {
       navigate("/profile");
     }
   }, [updateResponse?.data]);
-
-  const handlePasswordChange = () => {
-    changePwd({ email: userEmail });
-  };
 
   useEffect(() => {
     if (changeResponse?.success)
@@ -117,11 +106,7 @@ export default function ProfileEdit() {
                 label="Last name"
               />
             </Grid>
-            <Grid item xs textAlign="center">
-              <Link onClick={handlePasswordChange} variant="body2">
-                Change Password?
-              </Link>
-            </Grid>
+
             {error && (
               <Grid item xs={12} textAlign="center" color="red">
                 {error?.data.message}

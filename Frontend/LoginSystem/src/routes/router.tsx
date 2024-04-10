@@ -9,6 +9,7 @@ import ResetPassword from "../components/ResetPassword";
 import ProfileEdit from "../components/ProfileEdit";
 import ProfilePage from "../components/ProfilePage";
 import EmailConfirmSuccess from "../components/EmailConfirmSuccess";
+import ChangePassword from "../components/ChangePassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
             </Protected>
           }
         />
+        <Route path="/profile/change-password" element={<ChangePassword />} />
       </Route>
     </Route>
   )

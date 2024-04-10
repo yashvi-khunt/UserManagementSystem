@@ -83,6 +83,9 @@ const Header = () => {
               onClose={handleAvatarMenuClose}
             >
               <MenuItem onClick={navigateToProfile}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/profile/change-password")}>
+                Change Password
+              </MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>

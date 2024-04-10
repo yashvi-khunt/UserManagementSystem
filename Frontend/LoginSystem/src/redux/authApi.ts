@@ -88,6 +88,16 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    changePassword: builder.mutation<
+      authTypes.apiResponse,
+      authTypes.loginRegisterParams
+    >({
+      query: (data) => ({
+        url: "Auth/change-password",
+        method: "PUT",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -99,4 +109,5 @@ export const {
   useRegisterMutation,
   useUserDetailsQuery,
   useEditUserMutation,
+  useChangePasswordMutation,
 } = authApi;

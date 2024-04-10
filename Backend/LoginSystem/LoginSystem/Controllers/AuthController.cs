@@ -279,6 +279,37 @@ namespace LoginSystem.Controllers
 
         }
 
+
+        [Authorize]
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] VMChangePassword model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                   user.PasswordHash = _userManager.PasswordHasher.HashPassword(user,model.Password);
+                    var result = await _userManager.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(new Response("Password Changed successfully."));
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+                    }
+
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.",false));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,new Response(ex.Message, false));
+            }
+        }
+
         private string GenerateJwtToken(ApplicationUser user, List<Claim> claims)
         {
             // Get the JWT secret key and token validity duration from configuration
