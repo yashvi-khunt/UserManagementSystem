@@ -1,4 +1,4 @@
-﻿using LS.BLL.Repositories;
+﻿using LS.BLL.Interfaces;
 using LS.DAL.Helper;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -15,13 +15,17 @@ namespace LS.BLL.Services
         }
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
-            var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(settings.SenderEmail);
+            var email = new MimeMessage
+            {
+                Sender = MailboxAddress.Parse(settings.SenderEmail)
+            };
             email.To.Add(MailboxAddress.Parse(mailRequest.RecipientEmail));
             email.Subject = mailRequest.Subject;
 
-            var builder = new BodyBuilder();
-            builder.HtmlBody = mailRequest.Body;
+            var builder = new BodyBuilder
+            {
+                HtmlBody = mailRequest.Body
+            };
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();

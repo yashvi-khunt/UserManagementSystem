@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using LS.DAL.ViewModels;
@@ -12,10 +6,10 @@ using Microsoft.AspNetCore.Builder;
 
 namespace LS.Core.Middlewares
 {
-    public class ExceptionMiddelware : IMiddleware
+    public class ExceptionMiddleware : IMiddleware
     {
-        public ILogger<ExceptionMiddelware> _logger { get; }
-        public ExceptionMiddelware(ILogger<ExceptionMiddelware> logger)
+        public ILogger<ExceptionMiddleware> _logger { get; }
+        public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger)
         {
             _logger = logger;
         }
@@ -29,7 +23,7 @@ namespace LS.Core.Middlewares
             catch (Exception ex)
             {
 
-                _logger.LogError($"Somthing went wrong");
+                _logger.LogError($"Something went wrong");
                 await HandleException(context, ex);
             }
         }
@@ -40,8 +34,8 @@ namespace LS.Core.Middlewares
 
             var errorResponse = new ResponseError
             {
-                errorCode = statusCode,
-                errorMessage = ex.Message,
+                ErrorCode = statusCode,
+                ErrorMessage = ex.Message,
             };
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;
@@ -50,11 +44,11 @@ namespace LS.Core.Middlewares
     }
 
 
-    public static class ExceptionMiddelwareExtention
+    public static class ExceptionMiddlewareExtention
     {
-        public static void ConfigureExceptionMiddelware(this IApplicationBuilder app)
+        public static void ConfigureExceptionMiddleware(this IApplicationBuilder app)
         {
-            app.UseMiddleware<ExceptionMiddelware>();
+            app.UseMiddleware<ExceptionMiddleware>();
 
         }
     }

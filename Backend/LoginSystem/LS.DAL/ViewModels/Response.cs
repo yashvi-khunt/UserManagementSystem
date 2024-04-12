@@ -55,9 +55,9 @@ namespace LS.DAL.ViewModels
             Success = isSuccess;
         }
 
-        public Response(T data, bool isSuccess, MESSAGE message)
+        public Response(T data, bool isSuccess, string message)
         {
-            Message = GetEnumDescription(message);
+            Message = message;
             Success = isSuccess;
             Data = data;
         }
@@ -88,8 +88,8 @@ namespace LS.DAL.ViewModels
 
     public class ResponseError
     {
-        public long errorCode { get; set; }
-        public string? errorMessage { get; set; }
+        public long ErrorCode { get; set; }
+        public string? ErrorMessage { get; set; }
 
 
 

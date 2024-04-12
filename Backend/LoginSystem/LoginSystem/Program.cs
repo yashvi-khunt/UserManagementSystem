@@ -1,8 +1,9 @@
-
-using LS.BLL.Repositories;
+using LoginSystem.Configuration;
+using LS.BLL.Interfaces;
 using LS.BLL.Services;
 using LS.Core.Middlewares;
 using LS.DAL.Helper;
+using LS.DAL.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,12 @@ namespace LoginSystem
             });
 
 
+            //Sender Email Configuration
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+            //repositories and services
+            builder.Services.AddRepositories();
+            builder.Services.AddRepoServices();
 
             //Identity
             builder.Services.AddDbContext<LoginDbContext>(
@@ -59,13 +66,8 @@ namespace LoginSystem
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<LoginDbContext>()
+            .AddRoles<IdentityRole>()
             .AddDefaultTokenProviders();
-
-            //Email Configuration
-            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-            builder.Services.AddTransient<IEmailService, EmailService>();
-            builder.Services.AddTransient<IAuthService, AuthService>();
-
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -79,6 +81,7 @@ namespace LoginSystem
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 1;
             });
+            
 
             builder.Services.Configure<DataProtectionTokenProviderOptions>(options => options.TokenLifespan = TimeSpan.FromDays(1));
 
@@ -116,8 +119,6 @@ namespace LoginSystem
                     });
             });
 
-            builder.Services.AddTransient<ExceptionMiddelware>();
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -131,9 +132,10 @@ namespace LoginSystem
 
             app.UseCors("AllowAllOrigins");
 
+            
 
             app.UseAuthorization();
-
+            app.UseAuthentication();    
 
             app.MapControllers();
 

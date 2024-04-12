@@ -4,6 +4,7 @@ using LS.DAL.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LS.DAL.Migrations
 {
     [DbContext(typeof(LoginDbContext))]
-    partial class LoginDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412035006_Adding_columns_in_Users_Table")]
+    partial class Adding_columns_in_Users_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace LS.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LS.DAL.Models.ApplicationUser", b =>
+            modelBuilder.Entity("LS.DAL.Helper.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -34,7 +37,7 @@ namespace LS.DAL.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -97,56 +100,6 @@ namespace LS.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "d395681f-e727-42ea-a6eb-b18e9d3216d4",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "9c8394bb-fa9a-4420-a787-b93655a64d1f",
-                            CreatedDate = new DateTime(2024, 4, 12, 9, 56, 40, 645, DateTimeKind.Local).AddTicks(8548),
-                            EmailConfirmed = true,
-                            IsActivated = true,
-                            LockoutEnabled = false,
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAIo+AzN6RhJdn6KokJmIxkCi4zsMI+ieGrV3QH439iRdgs2PHk8Sa893FYqEJHjKw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "6c2d2ebf-572f-414f-855b-d695453a6589",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
-                });
-
-            modelBuilder.Entity("LS.DAL.Models.LoginHistory", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Browser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Device")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IpAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OS")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LoginHistories");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -174,18 +127,6 @@ namespace LS.DAL.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "5f26864b-da74-418d-aa21-22be636c2827",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = "d842f06f-88f4-4fb9-9594-7350be36a3d2",
-                            Name = "User"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -273,13 +214,6 @@ namespace LS.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "d395681f-e727-42ea-a6eb-b18e9d3216d4",
-                            RoleId = "5f26864b-da74-418d-aa21-22be636c2827"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -301,17 +235,6 @@ namespace LS.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LS.DAL.Models.LoginHistory", b =>
-                {
-                    b.HasOne("LS.DAL.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -323,7 +246,7 @@ namespace LS.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("LS.DAL.Models.ApplicationUser", null)
+                    b.HasOne("LS.DAL.Helper.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -332,7 +255,7 @@ namespace LS.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("LS.DAL.Models.ApplicationUser", null)
+                    b.HasOne("LS.DAL.Helper.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -347,7 +270,7 @@ namespace LS.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LS.DAL.Models.ApplicationUser", null)
+                    b.HasOne("LS.DAL.Helper.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -356,7 +279,7 @@ namespace LS.DAL.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("LS.DAL.Models.ApplicationUser", null)
+                    b.HasOne("LS.DAL.Helper.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
