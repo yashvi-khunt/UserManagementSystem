@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { FormInputPassword } from "./form/FormPasswordField";
+import { FormInputPassword } from "./common/form/FormPasswordField";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useChangePasswordMutation } from "../redux/authApi";
 import { useEffect } from "react";

@@ -6,19 +6,18 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormInputText } from "./form/FormInputText";
 import { useForm } from "react-hook-form";
-import { useForgotPasswordMutation } from "../redux/authApi";
+import { useForgotPasswordMutation } from "../../redux/authApi";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import PasswordEmailSent from "./PasswordEmailSent";
 import { useDispatch } from "react-redux";
-import { openSnackbar } from "../redux/snackbarSlice";
+import { openSnackbar } from "../../redux/snackbarSlice";
+import { FormInputText } from "..";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const { handleSubmit, register, control } = useForm();
-
-  const [mailSent, setMailSent] = useState(false);
+  const navigate = useNavigate();
   const [edata, setData] = useState<authTypes.forgotPasswordParams>({
     email: "",
   });
@@ -33,11 +32,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    setMailSent(false);
-  }, []);
-
-  useEffect(() => {
-    if (data?.success) setMailSent(true);
+    if (data?.success) navigate(`/sent-password-email/${edata.email}`);
   }, [data?.data]);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ export default function Login() {
     );
   }, [error?.data]);
 
-  return !mailSent ? (
+  return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Box
@@ -122,7 +117,5 @@ export default function Login() {
         </Box>
       </Box>
     </Container>
-  ) : (
-    <PasswordEmailSent email={edata.email} />
   );
 }

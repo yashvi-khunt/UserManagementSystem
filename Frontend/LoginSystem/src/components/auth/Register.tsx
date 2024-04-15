@@ -4,53 +4,45 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import { FormInputPassword } from "./form/FormPasswordField";
-import { useResetPasswordMutation } from "../redux/authApi";
-import { useEffect } from "react";
-import { ArrowBack, KeyRounded } from "@mui/icons-material";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppDispatch } from "../redux/hooks";
-import { openSnackbar } from "../redux/snackbarSlice";
+import { useRegisterMutation } from "../../redux/authApi";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../../redux/snackbarSlice";
+import { FormInputPassword, FormInputText } from "..";
 
-export default function ResetPassword() {
+export default function Register() {
   const { handleSubmit, register, watch, control } = useForm();
-  const dispatch = useAppDispatch();
+  const [registerApi, { data, error }] = useRegisterMutation();
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
-  const [resetApi, { data, error }] = useResetPasswordMutation();
-  const [searchParams] = useSearchParams();
-
   const onSubmit = (data: unknown) => {
-    resetApi({
-      newPassword: data.password,
-      email: searchParams.get("userEmail"),
-      token: searchParams.get("token")?.split(" ").join("+"),
-    } as authTypes.resetPasswordParams);
+    //console.log(data);
+    setEmail(data.email);
+    registerApi(data as authTypes.loginRegisterParams);
   };
 
   useEffect(() => {
-    if (data?.success) {
-      dispatch(
-        openSnackbar({
-          severity: "success",
-          message: data.message,
-        })
-      );
-      navigate("/auth/login");
-    }
-    if (error?.data && !error?.data.success) {
-      console.log("he");
-      dispatch(
-        openSnackbar({ severity: "error", message: error?.data.message })
-      );
-    }
-  }, [data?.data, error?.data]);
+    if (data?.success)
+      navigate(`/auth/confirm-email?mailSent=true&email=${email}`);
+
+    // if (error?.data && !error?.data.success) {
+    //   console.log("he");
+    //   dispatch(
+    //     openSnackbar({ severity: "error", message: error?.data.message })
+    //   );
+    // }
+  }, [data?.data, error?.data.data]);
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+
       <Box
         sx={{
           marginTop: 8,
@@ -61,11 +53,11 @@ export default function ResetPassword() {
       >
         <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
           <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <KeyRounded htmlColor="#7d56d4" />
+            <LockOutlinedIcon htmlColor="#7d56d4" />
           </Avatar>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Set new password
+          Sign up
         </Typography>
         <Box
           component="form"
@@ -74,6 +66,22 @@ export default function ResetPassword() {
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FormInputText
+                control={control}
+                {...register("email", {
+                  required: {
+                    value: true,
+                    message: "Email field is required.",
+                  },
+                  pattern: {
+                    value: /^\S+@\S+\.\S+$/,
+                    message: "Please enter a valid email address.",
+                  },
+                })}
+                label="Email"
+              />
+            </Grid>
             <Grid item xs={12}>
               <FormInputPassword
                 control={control}
@@ -123,18 +131,12 @@ export default function ResetPassword() {
             variant="contained"
             sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
           >
-            Reset Password
+            Sign Up
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link
-                href="/auth/login"
-                sx={{ textDecoration: "none", color: "gray" }}
-                variant="body2"
-              >
-                <Box justifyContent="center" display="flex" gap={0.2}>
-                  <ArrowBack fontSize="small" color="inherit" /> Back to login
-                </Box>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="/auth/login" variant="body2">
+                Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>

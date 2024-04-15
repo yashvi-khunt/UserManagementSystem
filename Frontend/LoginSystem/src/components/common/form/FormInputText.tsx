@@ -2,7 +2,7 @@ import { Controller } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import React from "react";
 
-export const FormInputText = React.forwardRef(
+const FormInputText = React.forwardRef(
   ({ name, control, label, value }: FormTypes.FormInputProps, ref) => {
     return (
       <Controller
@@ -26,3 +26,5 @@ export const FormInputText = React.forwardRef(
     );
   }
 );
+
+export default FormInputText;

@@ -5,10 +5,10 @@ import {
 } from "react-router-dom";
 import Profile from "../pages/Profile";
 import { ForgotPassword, Login, Protected, Register } from "../components";
-import ResetPassword from "../components/ResetPassword";
+import ResetPassword from "../components/auth/ResetPassword";
 import ProfileEdit from "../components/ProfileEdit";
 import ProfilePage from "../components/ProfilePage";
-import EmailConfirmSuccess from "../components/EmailConfirmSuccess";
+import EmailConfirmSuccess from "../components/auth/EmailConfirmSuccess";
 import ChangePassword from "../components/ChangePassword";
 
 const router = createBrowserRouter(

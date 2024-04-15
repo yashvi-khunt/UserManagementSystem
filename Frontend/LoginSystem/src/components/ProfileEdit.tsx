@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormInputText } from "./form/FormInputText";
+import { FormInputText } from "./common/form/FormInputText";
 import { useForm } from "react-hook-form";
 import {
   useEditUserMutation,
