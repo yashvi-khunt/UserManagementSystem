@@ -33,8 +33,9 @@ export default function Login() {
   }, [loginError]);
 
   useEffect(() => {
-    if (loginResponse?.token) {
-      dispatch(login(loginResponse.token));
+    if (loginResponse?.success) {
+      console.log("dispatch");
+      dispatch(login(loginResponse.data));
       navigate("/profile");
     }
   }, [loginResponse]);

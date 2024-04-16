@@ -5,13 +5,9 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormInputText } from "./common/form/FormInputText";
+import { FormInputText } from "./index";
 import { useForm } from "react-hook-form";
-import {
-  useEditUserMutation,
-  useForgotPasswordMutation,
-  useUserDetailsQuery,
-} from "../redux/authApi";
+import { useEditUserMutation, useUserDetailsQuery } from "../redux/authApi";
 import { useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -46,13 +42,6 @@ export default function ProfileEdit() {
       navigate("/profile");
     }
   }, [updateResponse?.data]);
-
-  useEffect(() => {
-    if (changeResponse?.success)
-      dispatch(
-        openSnackbar({ severity: "success", message: changeResponse.message })
-      );
-  }, [changeResponse?.data]);
 
   return (
     <Container maxWidth="xs">

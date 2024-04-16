@@ -3,6 +3,7 @@ import { store } from "./redux/store";
 import SnackBarComponent from "./components/common/SnackBarComponent";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./theme";
+import AppRouter from "./routes/AppRouter";
 
 function App() {
   return (

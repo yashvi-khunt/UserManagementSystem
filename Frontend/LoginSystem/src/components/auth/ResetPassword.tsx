@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import { FormInputPassword } from "../common/form/FormPasswordField";
+import { FormInputPassword } from "../index";
 import { useResetPasswordMutation } from "../../redux/authApi";
 import { useEffect } from "react";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";

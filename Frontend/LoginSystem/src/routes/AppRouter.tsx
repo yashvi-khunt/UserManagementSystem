@@ -10,13 +10,16 @@ import {
 } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { login } from "../redux/authSlice";
-import { Layout, Protected } from "../components";
+import { Layout, Login, ProfilePage, Protected } from "../components";
+import Profile from "../pages/Profile";
 
 const AppRouter = () => {
   const dispatch = useAppDispatch();
   const userRole: Global.Role = useAppSelector(
     (state) => state.auth.userData?.role
   ) as Global.Role;
+
+  console.log(userRole);
 
   const [isInitialized, setIsInitialized] = useState(false);
   useEffect(() => {

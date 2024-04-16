@@ -20,7 +20,7 @@ export const authApi = createApi({
   tagTypes: ["User"],
   endpoints: (builder) => ({
     login: builder.mutation<
-      authTypes.loginResponse,
+      authTypes.apiResponse,
       authTypes.loginRegisterParams
     >({
       query: (data) => ({
@@ -72,7 +72,7 @@ export const authApi = createApi({
     }),
     userDetails: builder.query<authTypes.userDetails, string>({
       query: (email) => ({
-        url: `Auth/details/${email}`,
+        url: `User/details/${email}`,
         method: "GET",
       }),
       providesTags: ["User"],

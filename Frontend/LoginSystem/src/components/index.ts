@@ -18,3 +18,6 @@ export { default as FormInputPassword } from "./common/form/FormPasswordField";
 export { default as AddUser } from "./AddUser";
 
 export { default as Layout } from "./common/Layout";
+
+export { default as SideNav } from "./common/SideNav";
+export { default as Logo } from "./common/Logo";
