@@ -40,8 +40,8 @@ namespace LS.Core.Middlewares
 
             var errorResponse = new ResponseError
             {
-                errorCode = statusCode,
-                errorMessage = ex.Message,
+                ErrorCode = statusCode,
+                ErrorMessage = ex.Message,
             };
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = statusCode;

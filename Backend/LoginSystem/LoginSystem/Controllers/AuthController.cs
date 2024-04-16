@@ -1,45 +1,34 @@
 ﻿using LS.BLL.Repositories;
 using LS.DAL.Helper;
 using LS.DAL.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Crypto;
-using System.ComponentModel;
-using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Net.WebRequestMethods;
-using System.Xml;
+using LS.DAL.Models;
+using LS.Core.Helpers;
+using UAParser;
 
 namespace LoginSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly ILoginHistoryService _loginHistoryService;
 
-        private LoginDbContext _context { get; set; }
-
-        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration, LoginDbContext context, IEmailService service)
+        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration, IEmailService service,ILoginHistoryService loginHistoryService)
         {
             _userManager = userManager;
             _configuration = configuration;
-            _context = context;
             _emailService = service;
+            _loginHistoryService = loginHistoryService;
         }
 
         [HttpPost]
@@ -49,10 +38,12 @@ namespace LoginSystem.Controllers
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
 
+
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, new Response("Username or Password is incorrect", false));
             }
+            var userRole = await _userManager.GetRolesAsync(user);
 
             if (!user.EmailConfirmed)
             {
@@ -62,14 +53,52 @@ namespace LoginSystem.Controllers
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var authClaims = new List<Claim> { new Claim(ClaimTypes.Email, user.Email) };
+                var authClaims = new List<Claim> {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                   new Claim(ClaimTypes.NameIdentifier, user.Id),
+                };
 
+                foreach (var role in userRole)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                }
 
                 // Create a JWT token
                 var token = GenerateJwtToken(user, authClaims);
 
+                // Get IP address from the request
+                var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+
+                // Parse User-Agent header to get browser, OS, and device details
+                var userAgent = Request.Headers["User-Agent"].ToString();
+                var uaParser = Parser.GetDefault();
+                ClientInfo clientInfo = uaParser.Parse(userAgent);
+
+                var browser = clientInfo.UserAgent.Family;
+                var operatingSystem = clientInfo.OS.Family;
+                var device = clientInfo.Device.Family;
+
+                VMAddLoginHistory vMAddLoginHistory = new VMAddLoginHistory
+                {
+                    UserId = user.Id,
+                    IpAddress = ipAddress,
+                    Browser = browser ?? "",
+                    DateTime = DateTime.Now,
+                    Device =  device == "Other" || device is null ?  "" : device,
+                    OS = operatingSystem ?? "",
+
+                };
+                
+                var response = await _loginHistoryService.AddLoginHistory(vMAddLoginHistory);
+                if (response != null && response.IsValid == true)
+                {
+                    // Return a successful response with the generated token and its expiration
+                    return StatusCode(200, new Response<string>(token, true, "Logged in successfully!"));
+                }
                 // Return a successful response with the generated token and its expiration
-                return Ok(new { token });
+                return StatusCode(200, new Response<string>(token, true, "Logged in successfully! But could not save login history."));
+
             }
             else
             {
@@ -77,45 +106,6 @@ namespace LoginSystem.Controllers
             }
         }
 
-        [Authorize]
-        [HttpGet("details/{email}")]
-        public async Task<IActionResult> GetUserDetails(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            var userDetails = new VMUserDetails()
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-            };
-            return Ok(userDetails);
-        }
-
-        [Authorize]
-        [HttpPut("edit/{email}")]
-        public async Task<IActionResult> EditUserDetails(string email, VMUpdateUser newModel)
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(email);
-                if (newModel.FirstName != null) user.FirstName = newModel.FirstName;
-                if (newModel.LastName != null) user.LastName = newModel.LastName;
-
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return Ok(new Response("User updated successfully", true));
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.", false));
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.", false));
-            }
-
-        }
 
         [HttpPost]
         [Route("register")]
@@ -153,18 +143,7 @@ namespace LoginSystem.Controllers
                 var confirmationLink = Url.Action("ConfirmEmail", "Auth", new { userId = user.Id, token = token }, Request.Scheme);
 
                 // Constructing the email template
-                var emailTemplate = $@"
-                    <html>
-                    <head>
-                        <title>Confirmation Mail</title>
-                    </head>
-                    <body>
-                        <p>Hi {user.UserName},</p>
-                        <p>In order to start using your new account, you need to confirm your email address.</p>
-                        <p>Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.</p>
-                        <p>If you did not sign up for this account, you can ignore this email and the account will be deleted.</p>
-                    </body>
-                    </html>";
+                var emailTemplate = EmailTemplate.UserConfirmationMail(user.UserName, confirmationLink);
 
                 MailRequest mailRequest = new MailRequest()
                 {
@@ -210,7 +189,7 @@ namespace LoginSystem.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null) return StatusCode(StatusCodes.Status202Accepted, new Response("Sent Email to user", false));
 
-            
+
 
             try
             {
@@ -219,18 +198,7 @@ namespace LoginSystem.Controllers
 
                 var resetLink = $"http://localhost:5173/auth/reset-password?userEmail={user.Email}&token={token}";
 
-                var emailTemplate = $@"
-                    <html>
-                    <head>
-                        <title>Password Reset Mail</title>
-                    </head>
-                    <body>
-                        <p>Hi {user.UserName},</p>
-                        <p>In order to change your password, you need to click on the below link.</p>
-                        <p>This link will redirect you to the password reset page <a href='{resetLink}'>Click here</a>.</p>
-                        <p>If you did not sign up for this account, you can ignore this email and the account will be deleted.</p>
-                    </body>
-                    </html>";
+                var emailTemplate = EmailTemplate.PasswordResetMail(user.UserName, resetLink);
 
                 MailRequest mailRequest = new MailRequest()
                 {
@@ -280,35 +248,7 @@ namespace LoginSystem.Controllers
         }
 
 
-        [Authorize]
-        [HttpPut("change-password")]
-        public async Task<IActionResult> ChangePassword([FromBody] VMChangePassword model)
-        {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                   user.PasswordHash = _userManager.PasswordHasher.HashPassword(user,model.Password);
-                    var result = await _userManager.UpdateAsync(user);
 
-                    if (result.Succeeded)
-                    {
-                        return Ok(new Response("Password Changed successfully."));
-                    }
-                    else
-                    {
-                        return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
-                    }
-
-                }
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong.",false));
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,new Response(ex.Message, false));
-            }
-        }
 
         private string GenerateJwtToken(ApplicationUser user, List<Claim> claims)
         {

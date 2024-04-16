@@ -4,6 +4,7 @@ using LS.DAL.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LS.DAL.Migrations
 {
     [DbContext(typeof(LoginDbContext))]
-    partial class LoginDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240412042641_Adding_LoginHistory_Table")]
+    partial class Adding_LoginHistory_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,17 +104,17 @@ namespace LS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5d52d6ad-4844-4943-a4fb-4aea64f2b577",
+                            Id = "d395681f-e727-42ea-a6eb-b18e9d3216d4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cf7b766e-7437-4043-90d1-69bb496eff85",
-                            CreatedDate = new DateTime(2024, 4, 16, 9, 35, 59, 121, DateTimeKind.Local).AddTicks(3591),
+                            ConcurrencyStamp = "9c8394bb-fa9a-4420-a787-b93655a64d1f",
+                            CreatedDate = new DateTime(2024, 4, 12, 9, 56, 40, 645, DateTimeKind.Local).AddTicks(8548),
                             EmailConfirmed = true,
                             IsActivated = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIhBVSg5p/NLoHtl2vv5zbbmH2BrSz9aaoO9pUZUXTJ9GsOwrWAP2wGGQaCE63c5gg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAIo+AzN6RhJdn6KokJmIxkCi4zsMI+ieGrV3QH439iRdgs2PHk8Sa893FYqEJHjKw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "573ca3e8-608f-4f8c-b8f2-7ceb03ea7f97",
+                            SecurityStamp = "6c2d2ebf-572f-414f-855b-d695453a6589",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -119,11 +122,8 @@ namespace LS.DAL.Migrations
 
             modelBuilder.Entity("LS.DAL.Models.LoginHistory", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Browser")
                         .HasColumnType("nvarchar(max)");
@@ -181,12 +181,12 @@ namespace LS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "76b642a9-3291-4a4b-9dcc-0fa838b6fa9b",
+                            Id = "5f26864b-da74-418d-aa21-22be636c2827",
                             Name = "Admin"
                         },
                         new
                         {
-                            Id = "46492ea9-859f-4379-a91e-d67e39ab8c2a",
+                            Id = "d842f06f-88f4-4fb9-9594-7350be36a3d2",
                             Name = "User"
                         });
                 });
@@ -280,8 +280,8 @@ namespace LS.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "5d52d6ad-4844-4943-a4fb-4aea64f2b577",
-                            RoleId = "76b642a9-3291-4a4b-9dcc-0fa838b6fa9b"
+                            UserId = "d395681f-e727-42ea-a6eb-b18e9d3216d4",
+                            RoleId = "5f26864b-da74-418d-aa21-22be636c2827"
                         });
                 });
 

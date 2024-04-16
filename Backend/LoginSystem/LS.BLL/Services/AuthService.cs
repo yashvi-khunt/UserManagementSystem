@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LS.BLL.Repositories;
 using LS.DAL.Helper;
+using LS.DAL.Models;
 using LS.DAL.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

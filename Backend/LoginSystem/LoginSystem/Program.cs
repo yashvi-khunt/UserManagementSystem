@@ -1,8 +1,11 @@
 
 using LS.BLL.Repositories;
 using LS.BLL.Services;
+using LS.BLL.SQLRepository;
+using LS.Core.Mapper;
 using LS.Core.Middlewares;
 using LS.DAL.Helper;
+using LS.DAL.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +54,8 @@ namespace LoginSystem
                 });
             });
 
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 
             //Identity
@@ -65,6 +70,8 @@ namespace LoginSystem
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
             builder.Services.AddTransient<IEmailService, EmailService>();
             builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddTransient<IProcedureManager,ProcedureManager>();
+            builder.Services.AddTransient<ILoginHistoryService, LoginHistoryService>();
 
 
             builder.Services.Configure<IdentityOptions>(options =>
