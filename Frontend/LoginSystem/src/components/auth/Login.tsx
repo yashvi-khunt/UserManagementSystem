@@ -7,11 +7,10 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { FormInputText } from "./common/form/FormInputText";
+import { FormInputText, FormInputPassword } from "../index";
 import { useForm } from "react-hook-form";
-import { useLoginMutation } from "../redux/api/authApi";
-import { FormInputPassword } from "./common/form/FormPasswordField";
-import { login } from "../redux/slice/authSlice";
+import { useLoginMutation } from "../../redux/api/authApi";
+import { login } from "../../redux/slice/authSlice";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +33,6 @@ export default function Login() {
 
   useEffect(() => {
     if (loginResponse?.success) {
-      console.log("dispatch");
       dispatch(login(loginResponse.data));
       navigate("/profile");
     }

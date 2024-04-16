@@ -5,7 +5,7 @@ import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React from "react";
 
-export const FormInputPassword = React.forwardRef(
+const FormInputPassword = React.forwardRef(
   ({ name, control, label }: FormTypes.FormInputProps, ref) => {
     const [showPassword, setShowPassword] = useState(false);
     return (
@@ -42,3 +42,5 @@ export const FormInputPassword = React.forwardRef(
     );
   }
 );
+
+export default FormInputPassword;

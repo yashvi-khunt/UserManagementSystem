@@ -11,11 +11,11 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { FormInputPassword } from "./form/FormPasswordField";
+import { FormInputPassword } from "./index";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { useChangePasswordMutation } from "../redux/authApi";
+import { useChangePasswordMutation } from "../redux/api/authApi";
 import { useEffect } from "react";
-import { openSnackbar } from "../redux/snackbarSlice";
+import { openSnackbar } from "../redux/slice/snackbarSlice";
 
 const ChangePassword = () => {
   const { handleSubmit, register, control, watch, reset } = useForm();

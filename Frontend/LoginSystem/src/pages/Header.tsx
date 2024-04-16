@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Avatar,
+  Badge,
   Box,
   Divider,
+  Drawer,
   IconButton,
   Toolbar,
   Typography,
@@ -11,28 +13,40 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Menu as MenuIcon } from "@mui/icons-material";
-
+import { SideNav } from "../components/index";
+import { URL } from "../utils/constants/URLConstants";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/authSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { logout } from "../redux/slice/authSlice";
 
 const Header = () => {
-  // const [mobileOpen, setMobileOpen] = useState(false);
-  // const [isClosing, setIsClosing] = useState(false);
+  const drawerWidth = 240;
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  //   const user = useAppSelector((state) => state.auth.userData);
+  const user = useAppSelector((state) => state.auth.userData);
+  const userEmail = user?.email;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const navigateToProfile = () => {
-    navigate("/profile");
+    navigate(URL.PROFILE);
   };
 
-  // const handleDrawerToggle = () => {
-  //   if (!isClosing) {
-  //     setMobileOpen(!mobileOpen);
-  //   }
-  // };
+  const handleDrawerClose = () => {
+    setIsClosing(true);
+    setMobileOpen(false);
+  };
+
+  const handleDrawerTransitionEnd = () => {
+    setIsClosing(false);
+  };
+
+  const handleDrawerToggle = () => {
+    if (!isClosing) {
+      setMobileOpen(!mobileOpen);
+    }
+  };
 
   const handleAvatarMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,7 +58,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/profile");
+    navigate(`${URL.AUTH}/login`);
     location.reload();
   };
 
@@ -54,18 +68,20 @@ const Header = () => {
         elevation={0}
         position="fixed"
         sx={{
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
           bgcolor: "common.white",
         }}
       >
         <Toolbar>
-          {/* <IconButton
+          <IconButton
             aria-label="open drawer"
             edge="start"
-            // onClick={handleDrawerToggle}
+            onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { md: "none" } }}
           >
             <MenuIcon />
-          </IconButton> */}
+          </IconButton>
           <Typography
             variant="h6"
             color="initial"
@@ -73,25 +89,67 @@ const Header = () => {
             component="div"
             sx={{ flexGrow: 1 }}
           >
-            Welcome
+            Welcome, {user?.email}
           </Typography>
+          {/* <IconButton>
+						<Badge badgeContent={4} color='primary'>
+							<NotificationsNone />
+						</Badge>
+					</IconButton> */}
           <Box>
-            <Avatar sx={{ ml: 2 }} onClick={handleAvatarMenuOpen}></Avatar>
+            <Avatar sx={{ ml: 2 }} onClick={handleAvatarMenuOpen}>
+              {user?.email.slice(0, 1).toUpperCase()}
+            </Avatar>
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleAvatarMenuClose}
             >
               <MenuItem onClick={navigateToProfile}>Profile</MenuItem>
-              <MenuItem onClick={() => navigate("/profile/change-password")}>
-                Change Password
-              </MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
         </Toolbar>
         <Divider />
       </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onTransitionEnd={handleDrawerTransitionEnd}
+          onClose={handleDrawerClose}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          <SideNav />
+        </Drawer>
+
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", md: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+          open
+        >
+          <SideNav />
+        </Drawer>
+      </Box>
     </>
   );
 };

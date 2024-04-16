@@ -1,26 +1,9 @@
-import {
-  RootState,
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { indexApi } from "./indexApi";
 
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5041/api/",
-    prepareHeaders: (headers, { getState }) => {
-      const { userToken: token } = (getState() as RootState).auth;
-
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
-  tagTypes: ["User"],
+export const authApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<
-      authTypes.loginResponse,
+      authTypes.apiResponse,
       authTypes.loginRegisterParams
     >({
       query: (data) => ({
@@ -28,6 +11,7 @@ export const authApi = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
     register: builder.mutation<
       authTypes.apiResponse,
@@ -72,7 +56,7 @@ export const authApi = createApi({
     }),
     userDetails: builder.query<authTypes.userDetails, string>({
       query: (email) => ({
-        url: `Auth/details/${email}`,
+        url: `User/details/${email}`,
         method: "GET",
       }),
       providesTags: ["User"],

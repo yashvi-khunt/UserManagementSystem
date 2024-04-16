@@ -9,7 +9,7 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { useUserDetailsQuery } from "../redux/authApi";
+import { useUserDetailsQuery } from "../redux/api/authApi";
 import { useAppSelector } from "../redux/hooks";
 import { Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";

@@ -7,13 +7,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import { FormInputPassword } from "./form/FormPasswordField";
-import { useResetPasswordMutation } from "../redux/authApi";
+import { FormInputPassword } from "../index";
+import { useResetPasswordMutation } from "../../redux/api/authApi";
 import { useEffect } from "react";
 import { ArrowBack, KeyRounded } from "@mui/icons-material";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAppDispatch } from "../redux/hooks";
-import { openSnackbar } from "../redux/snackbarSlice";
+import { useAppDispatch } from "../../redux/hooks";
+import { openSnackbar } from "../../redux/slice/snackbarSlice";
 
 export default function ResetPassword() {
   const { handleSubmit, register, watch, control } = useForm();

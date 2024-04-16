@@ -8,13 +8,12 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import { FormInputText } from "./form/FormInputText";
-import { FormInputPassword } from "./form/FormPasswordField";
-import { useRegisterMutation } from "../redux/authApi";
+import { useRegisterMutation } from "../../redux/api/authApi";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { openSnackbar } from "../redux/snackbarSlice";
+import { openSnackbar } from "../../redux/slice/snackbarSlice";
+import { FormInputPassword, FormInputText } from "..";
 
 export default function Register() {
   const { handleSubmit, register, watch, control } = useForm();

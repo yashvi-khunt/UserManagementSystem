@@ -3,25 +3,23 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import Profile from "../pages/Profile";
-import { ForgotPassword, Login, Protected, Register } from "../components";
-import ResetPassword from "../components/ResetPassword";
+import {
+  ForgotPassword,
+  Layout,
+  Login,
+  Protected,
+  Register,
+} from "../components";
+import ResetPassword from "../components/auth/ResetPassword";
 import ProfileEdit from "../components/ProfileEdit";
 import ProfilePage from "../components/ProfilePage";
-import EmailConfirmSuccess from "../components/EmailConfirmSuccess";
+import EmailConfirmSuccess from "../components/auth/EmailConfirmSuccess";
 import ChangePassword from "../components/ChangePassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route
-        path="/"
-        element={
-          <Protected>
-            <Profile />
-          </Protected>
-        }
-      />
+      <Route path="/" element={<Layout />} />
       <Route path="auth">
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
@@ -33,12 +31,12 @@ const router = createBrowserRouter(
         path="profile"
         element={
           <Protected>
-            <Profile />
+            <Layout />
           </Protected>
         }
       >
         <Route
-          path="/profile"
+          path=""
           element={
             <Protected>
               <ProfilePage />
@@ -46,14 +44,14 @@ const router = createBrowserRouter(
           }
         />
         <Route
-          path="/profile/edit"
+          path="profile/edit"
           element={
             <Protected>
               <ProfileEdit />
             </Protected>
           }
         />
-        <Route path="/profile/change-password" element={<ChangePassword />} />
+        <Route path="profile/change-password" element={<ChangePassword />} />
       </Route>
     </Route>
   )
