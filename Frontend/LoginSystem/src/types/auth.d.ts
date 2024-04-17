@@ -33,7 +33,6 @@ declare namespace authTypes {
   };
 
   type updateUserProps = {
-    email: string;
     firstName?: string;
     lastName?: string;
   };

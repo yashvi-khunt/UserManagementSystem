@@ -54,34 +54,6 @@ export const authApi = indexApi.injectEndpoints({
         body: data,
       }),
     }),
-    userDetails: builder.query<authTypes.userDetails, string>({
-      query: (email) => ({
-        url: `User/details/${email}`,
-        method: "GET",
-      }),
-      providesTags: ["User"],
-    }),
-    editUser: builder.mutation<
-      authTypes.apiResponse,
-      authTypes.updateUserProps
-    >({
-      query: (data) => ({
-        url: `Auth/edit/${data.email}`,
-        method: "PUT",
-        body: { firstName: data.firstName, lastName: data.lastName },
-      }),
-      invalidatesTags: ["User"],
-    }),
-    changePassword: builder.mutation<
-      authTypes.apiResponse,
-      authTypes.loginRegisterParams
-    >({
-      query: (data) => ({
-        url: "Auth/change-password",
-        method: "PUT",
-        body: data,
-      }),
-    }),
   }),
 });
 
@@ -91,7 +63,4 @@ export const {
   useForgotPasswordMutation,
   useResetPasswordMutation,
   useRegisterMutation,
-  useUserDetailsQuery,
-  useEditUserMutation,
-  useChangePasswordMutation,
 } = authApi;

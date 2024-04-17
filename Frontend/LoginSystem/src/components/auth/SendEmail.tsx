@@ -1,19 +1,32 @@
-import { ArrowBack, Email } from "@mui/icons-material";
+import { Email, ArrowBack, Mail } from "@mui/icons-material";
 import {
-  Avatar,
-  Box,
   Container,
   CssBaseline,
+  Box,
+  Avatar,
+  Typography,
   Grid,
   Link,
-  Typography,
+  Button,
+  colors,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-type PasswordEmailSentProps = {
-  email: string;
-};
+const SendEmail = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
-const PasswordEmailSent = ({ email }: PasswordEmailSentProps) => {
+  useEffect(() => {
+    if (searchParams.get("email")) {
+      setEmail(searchParams.get("email"));
+
+      searchParams.delete("email");
+      setSearchParams(searchParams);
+    }
+  }, [searchParams]);
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -40,7 +53,7 @@ const PasswordEmailSent = ({ email }: PasswordEmailSentProps) => {
           variant="body2"
           marginTop={1}
         >
-          We have sent a password reset link to <br />
+          We have sent a confirmation email to <br />
           {email}
         </Typography>
         <Box
@@ -50,18 +63,20 @@ const PasswordEmailSent = ({ email }: PasswordEmailSentProps) => {
           width="100%"
           textAlign="center"
         >
-          {/* <Grid container>
-            <Grid item xs>
-              Didn't recieve the email?
-              <Link
-                onClick={resendEmail}
-                sx={{ textDecoration: "none", color: "#7d56d4" }}
-                variant="body2"
-              >
-                Click to resend.
-              </Link>
-            </Grid>
-          </Grid> */}
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
+          >
+            <Mail />
+            <Link
+              underline="none"
+              href="https://mail.google.com"
+              sx={{ ml: 1, color: "white" }}
+            >
+              Open Mail
+            </Link>
+          </Button>
           <Grid container marginTop={2}>
             <Grid item xs>
               <Link
@@ -70,7 +85,7 @@ const PasswordEmailSent = ({ email }: PasswordEmailSentProps) => {
                 variant="body2"
               >
                 <Box justifyContent="center" display="flex" gap={0.2}>
-                  <ArrowBack fontSize="small" color="inherit" /> Back to login
+                  <ArrowBack fontSize="small" color="inherit" /> Go to login
                 </Box>
               </Link>
             </Grid>
@@ -81,4 +96,4 @@ const PasswordEmailSent = ({ email }: PasswordEmailSentProps) => {
   );
 };
 
-export default PasswordEmailSent;
+export default SendEmail;

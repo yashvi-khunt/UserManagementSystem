@@ -20,14 +20,16 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.status = true;
-      state.token = action.payload;
       const decode = jwtDecode<Global.DecodedToken>(action.payload);
       const user: Global.userData = {
         role: decode[tokenFields.role as keyof Global.DecodedToken],
         id: decode[tokenFields.id as keyof Global.DecodedToken][1],
         email: decode[tokenFields.email as keyof Global.DecodedToken],
       };
+
+      state.status = true;
+      state.token = action.payload;
+      state.userData = user;
 
       // Save user data to local storage
       localStorage.setItem(

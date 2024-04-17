@@ -21,3 +21,5 @@ export { default as Layout } from "./common/Layout";
 
 export { default as SideNav } from "./common/SideNav";
 export { default as Logo } from "./common/Logo";
+
+export { default as SetPassword } from "./auth/SetPassword";

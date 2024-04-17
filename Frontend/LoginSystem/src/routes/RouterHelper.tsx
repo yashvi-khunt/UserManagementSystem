@@ -1,5 +1,6 @@
 import {
   AddUser,
+  ChangePassword,
   EmailConfirmSuccess,
   ForgotPassword,
   Login,
@@ -9,6 +10,7 @@ import {
   Register,
   ResetPassword,
 } from "../components";
+import LoginHistories from "../pages/LoginHistories";
 import Users from "../pages/Users";
 import { URL } from "../utils/constants/URLConstants";
 
@@ -22,6 +24,11 @@ export const routerHelper: Global.RouteConfig = [
       {
         path: URL.EDIT,
         element: <ProfileEdit />,
+        roles: ["Admin", "User"],
+      },
+      {
+        path: "change-password",
+        element: <ChangePassword />,
         roles: ["Admin", "User"],
       },
     ],
@@ -39,6 +46,12 @@ export const routerHelper: Global.RouteConfig = [
         roles: ["Admin"],
       },
     ],
+  },
+  {
+    name: "Login History",
+    path: "/loginHistories",
+    element: <LoginHistories />,
+    roles: ["Admin", "User"],
   },
   //   {
   // 	name:"Login History",

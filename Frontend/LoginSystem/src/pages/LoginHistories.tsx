@@ -5,18 +5,19 @@ import {
   GridRenderCellParams,
   GridValidRowModel,
 } from "@mui/x-data-grid";
-import { useGetUserListQuery } from "../redux/api/userApi";
+
 import dayjs from "dayjs";
 import { Box, Button, Container, Typography } from "@mui/material";
 import { URL } from "../utils/constants/URLConstants";
 import { useAppSelector } from "../redux/hooks";
 import Table from "../components/dynamicTable/DynamicTable";
-import AutoCompleteField from "../components/dynamicTable/AutoCompleteField";
 
-const Users = () => {
+import { useGetLoginHistoriesQuery } from "../redux/api/loginHistory";
+
+const LoginHistories = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { data } = useGetUserListQuery({
+  const { data } = useGetLoginHistoriesQuery({
     ...Object.fromEntries(searchParams.entries()),
   });
 
@@ -24,75 +25,54 @@ const Users = () => {
 
   const columns: GridColDef[] = [
     {
-      field: "firstName",
-      headerName: "First Name",
-      renderCell: ({ value }: GridRenderCellParams) => {
-        return value || "-";
-      },
-      width: 150,
-    },
-    {
-      field: "lastName",
-      headerName: "Last Name",
-      renderCell: ({ value }: GridRenderCellParams) => {
-        return value || "-";
-      },
-      width: 150,
-    },
-    {
       field: "userName",
-      headerName: "User Name",
+      headerName: "User",
       width: 150,
     },
     {
-      field: "role",
-      headerName: "Role",
+      field: "date",
+      headerName: "Date",
+      renderCell: ({ row }: GridRenderCellParams) =>
+        dayjs(row.dateTime).format("DD/MM/YYYY"),
       width: 150,
     },
     {
-      field: "createdDate",
-      headerName: "Created Date",
+      field: "time",
+      headerName: "Time",
+      renderCell: ({ row }: GridRenderCellParams) =>
+        dayjs(row.dateTime).format("h:mm A"),
+      width: 150,
+    },
+    {
+      field: "ipAddress",
+      headerName: "IP Address",
       renderCell: ({ value }: GridRenderCellParams) =>
-        dayjs(value).format("DD/MM/YYYY"),
+        value === "::1" ? "Local Host" : value,
       width: 150,
     },
     {
-      field: "isActivated",
-      headerName: "Status",
-      renderCell: ({ value }: GridRenderCellParams) => {
-        if (value) {
-          return "Active";
-        } else {
-          return "Deactive";
-        }
-      },
+      field: "browser",
+      headerName: "Browser",
+      width: 150,
     },
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   headerName: "Actions",
-    //   width: 100,
-    //   renderCell: (params) => (
-    //     <>
-    //       <GridActionsCellItem
-    //         icon={<EditIcon />}
-    //         label="Edit"
-    //         className="textPrimary"
-    //         onClick={() => handleEdit(params.row.employeeId)}
-    //       />
-    //       <GridActionsCellItem
-    //         icon={<DeleteIcon />}
-    //         label="Delete"
-    //         onClick={() => handleDelete(params)}
-    //       />
-    //     </>
-    //   ),
-    // },
+    {
+      field: "os",
+      headerName: "OS",
+      width: 150,
+    },
+    {
+      field: "device",
+      headerName: "Device",
+      renderCell: ({ value }: GridRenderCellParams) => {
+        return value || "-";
+      },
+      width: 150,
+    },
   ];
 
   const pageInfo: DynamicTable.TableProps = {
     columns: columns,
-    rows: data?.data.users as GridValidRowModel[] | undefined,
+    rows: data?.data.loginHistories as GridValidRowModel[] | undefined,
     rowCount: data?.data.count,
   };
 
@@ -106,15 +86,8 @@ const Users = () => {
           alignItems="center"
         >
           <Typography variant="h5" color="initial">
-            Users
+            Login Histories
           </Typography>
-          {userRole === "Admin" ? (
-            <Box>
-              <Button variant="contained" onClick={() => navigate(URL.ADD)}>
-                Add
-              </Button>
-            </Box>
-          ) : null}
         </Box>
         <Table {...pageInfo}>
           <Box
@@ -141,4 +114,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default LoginHistories;

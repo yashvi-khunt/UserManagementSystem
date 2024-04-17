@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FormInputPassword } from "./index";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { useChangePasswordMutation } from "../redux/api/authApi";
+import { useChangePasswordMutation } from "../redux/api/userApi";
 import { useEffect } from "react";
 import { openSnackbar } from "../redux/slice/snackbarSlice";
 

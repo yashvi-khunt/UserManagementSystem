@@ -1,14 +1,14 @@
 USE [login-system]
 GO
 
-/****** Object:  StoredProcedure [dbo].[usp_GetLoginHistory]    Script Date: 16-04-2024 12:39:06 ******/
+/****** Object:  StoredProcedure [dbo].[usp_GetLoginHistory]    Script Date: 17-04-2024 11:07:17 ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[usp_GetLoginHistory]
+ALTER PROCEDURE [dbo].[usp_GetLoginHistory]
    
     @Field NVARCHAR(50) = 'Id', --code
     @Sort NVARCHAR(50) = 'asc', -- asc
@@ -46,7 +46,7 @@ BEGIN
                 CASE WHEN @Field = 'createdDate' AND @Sort = 'asc' THEN createdDate END ASC,
                 CASE WHEN @Field = 'createdDate' AND @Sort = 'desc' THEN createdDate END DESC
      )
-     AS Id ,a.Id AS UserId,a.UserName,Format(lh.DateTime,'dd-MM-yyyy') AS Date, cast(lh.DateTime as time) AS Time,lh.IpAddress,lh.Browser,lh.OS,lh.Device
+     AS Id ,a.Id AS UserId,a.UserName,lh.DateTime,lh.IpAddress,lh.Browser,lh.OS,lh.Device
 	 FROM AspNetUsers a
 	 INNER JOIN LoginHistories lh ON a.Id = lh.UserId
 	 INNER JOIN #tempLoginHistory tlh ON tlh.Id = lh.Id	
@@ -55,6 +55,7 @@ BEGIN
 
 END
 
---exec [usp_LoginHistory] @Page = 1,@pageSize =10, @Field = '',@Sort ='asc',@Text='',@fromDate='',@toDate='',@UserIds=''
+--exec [usp_GetLoginHistory] @Page = 1,@pageSize =10, @Field = '',@Sort ='asc',@Text='',@fromDate='',@toDate='',@UserIds=''
 GO
+
 

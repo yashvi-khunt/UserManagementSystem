@@ -9,16 +9,16 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import { useUserDetailsQuery } from "../redux/api/authApi";
-import { useAppSelector } from "../redux/hooks";
+import { useUserDetailsQuery } from "../redux/api/userApi";
+// import { useAppSelector } from "../redux/hooks";
 import { Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const userEmail = useAppSelector((state) => state.auth.userEmail);
+  // const userEmail = useAppSelector((state) => state.auth.userData?.email);
   //console.log(userEmail);
-  const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
+  const { data: userDetails } = useUserDetailsQuery();
 
   const firstNameInitial = userDetails?.firstName
     ? userDetails?.firstName[0]
@@ -49,7 +49,7 @@ const ProfilePage = () => {
               justifyContent="center"
               alignItems="center"
             >
-              {firstNameInitial !== "?" && lastNameInitial !== "?" ? (
+              {firstNameInitial !== "?" || lastNameInitial !== "?" ? (
                 <>
                   <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
                     {/* PROFILE PHOTO */}

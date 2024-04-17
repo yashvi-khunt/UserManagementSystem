@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Avatar,
-  Badge,
   Box,
   Divider,
   Drawer,
@@ -25,7 +24,6 @@ const Header = () => {
   const [isClosing, setIsClosing] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const user = useAppSelector((state) => state.auth.userData);
-  const userEmail = user?.email;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -84,6 +82,7 @@ const Header = () => {
           </IconButton>
           <Typography
             variant="h6"
+            fontSize={16}
             color="initial"
             noWrap
             component="div"
@@ -91,11 +90,7 @@ const Header = () => {
           >
             Welcome, {user?.email}
           </Typography>
-          {/* <IconButton>
-						<Badge badgeContent={4} color='primary'>
-							<NotificationsNone />
-						</Badge>
-					</IconButton> */}
+
           <Box>
             <Avatar sx={{ ml: 2 }} onClick={handleAvatarMenuOpen}>
               {user?.email.slice(0, 1).toUpperCase()}
@@ -106,6 +101,9 @@ const Header = () => {
               onClose={handleAvatarMenuClose}
             >
               <MenuItem onClick={navigateToProfile}>Profile</MenuItem>
+              <MenuItem onClick={() => navigate("/profile/change-password")}>
+                Change Password
+              </MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>

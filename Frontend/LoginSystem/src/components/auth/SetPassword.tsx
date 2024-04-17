@@ -4,45 +4,53 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useForm } from "react-hook-form";
-import { useRegisterMutation } from "../../redux/api/authApi";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { FormInputPassword } from "../index";
+import { useResetPasswordMutation } from "../../redux/api/authApi";
+import { useEffect } from "react";
+import { ArrowBack, KeyRounded } from "@mui/icons-material";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAppDispatch } from "../../redux/hooks";
 import { openSnackbar } from "../../redux/slice/snackbarSlice";
-import { FormInputPassword, FormInputText } from "..";
 
-export default function Register() {
+export default function SetPassword() {
   const { handleSubmit, register, watch, control } = useForm();
-  const [registerApi, { data, error: registerError }] = useRegisterMutation();
-  const dispatch = useDispatch();
-  const [email, setEmail] = useState("");
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const [resetApi, { data, error }] = useResetPasswordMutation();
+  const [searchParams] = useSearchParams();
 
   const onSubmit = (data: unknown) => {
-    //console.log(data);
-    setEmail(data.email);
-    registerApi(data as authTypes.loginRegisterParams);
+    resetApi({
+      newPassword: data.password,
+      email: searchParams.get("email"),
+      token: searchParams.get("pwd")?.split(" ").join("+"),
+    } as authTypes.resetPasswordParams);
   };
 
   useEffect(() => {
-    setError(registerError?.data.message);
-  }, [registerError]);
+    if (data?.success) {
+      dispatch(
+        openSnackbar({
+          severity: "success",
+          message: data.message,
+        })
+      );
+      navigate("/auth/login");
+    }
+    if (error?.data && !error?.data.success) {
+      console.log("he");
+      dispatch(
+        openSnackbar({ severity: "error", message: error?.data.message })
+      );
+    }
+  }, [data?.data, error?.data]);
 
-  useEffect(() => {
-    if (data?.success) navigate(`/auth/sent-confirm-email?email=${email}`);
-  }, [data?.data]);
-  const clearError = () => {
-    setError(null);
-  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-
       <Box
         sx={{
           marginTop: 8,
@@ -53,36 +61,19 @@ export default function Register() {
       >
         <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
           <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <LockOutlinedIcon htmlColor="#7d56d4" />
+            <KeyRounded htmlColor="#7d56d4" />
           </Avatar>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Set new password
         </Typography>
         <Box
           component="form"
           noValidate
           onSubmit={handleSubmit(onSubmit)}
           sx={{ mt: 3 }}
-          onChange={clearError}
         >
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormInputText
-                control={control}
-                {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Email field is required.",
-                  },
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "Please enter a valid email address.",
-                  },
-                })}
-                label="Email"
-              />
-            </Grid>
             <Grid item xs={12}>
               <FormInputPassword
                 control={control}
@@ -125,11 +116,6 @@ export default function Register() {
                 })}
               />
             </Grid>
-            {error && (
-              <Grid item xs={12} textAlign="center" color="red">
-                {error}
-              </Grid>
-            )}
           </Grid>
           <Button
             type="submit"
@@ -137,12 +123,18 @@ export default function Register() {
             variant="contained"
             sx={{ mt: 3, mb: 2, bgcolor: "#7d56d4" }}
           >
-            Sign Up
+            Set Password
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link href="/auth/login" variant="body2">
-                Already have an account? Sign in
+          <Grid container>
+            <Grid item xs>
+              <Link
+                href="/auth/login"
+                sx={{ textDecoration: "none", color: "gray" }}
+                variant="body2"
+              >
+                <Box justifyContent="center" display="flex" gap={0.2}>
+                  <ArrowBack fontSize="small" color="inherit" /> Back to login
+                </Box>
               </Link>
             </Grid>
           </Grid>

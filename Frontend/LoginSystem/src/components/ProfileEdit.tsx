@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { FormInputText } from "./index";
 import { useForm } from "react-hook-form";
-import { useEditUserMutation, useUserDetailsQuery } from "../redux/api/authApi";
+import { useEditUserMutation, useUserDetailsQuery } from "../redux/api/userApi";
 import { useNavigate } from "react-router-dom";
 import { ArrowBack, Edit } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
@@ -21,13 +21,12 @@ export default function ProfileEdit() {
   const [updateApi, { data: updateResponse, error }] = useEditUserMutation();
   const dispatch = useAppDispatch();
 
-  const userEmail = useAppSelector((state) => state.auth.userEmail);
-  const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
+  // const userEmail = useAppSelector((state) => state.auth.userData?.email);
+  const { data: userDetails } = useUserDetailsQuery();
 
   const onSubmit = (data: object) => {
     updateApi({
       ...data,
-      email: userEmail,
     } as authTypes.updateUserProps);
   };
 
