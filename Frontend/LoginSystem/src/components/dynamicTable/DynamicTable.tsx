@@ -61,11 +61,17 @@ const Table = ({
   return (
     <>
       {children}
-      <Box sx={{ width: "100%", height: "650px" }}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "631px",
+        }}
+      >
         <DataGrid
           columns={props?.columns || []}
           rows={props?.rows || []}
           rowCount={props?.rowCount || 0}
+          autoHeight={false}
           pagination
           pageSizeOptions={[5, 10, 25, 50]}
           slots={{
