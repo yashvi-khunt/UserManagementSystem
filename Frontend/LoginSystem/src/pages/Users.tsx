@@ -17,7 +17,7 @@ import { URL } from "../utils/constants/URLConstants";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import Table from "../components/dynamicTable/DynamicTable";
 import AutoCompleteField from "../components/dynamicTable/AutoCompleteField";
-import { InfoOutlined, Person, PersonOff } from "@mui/icons-material";
+import { Edit, InfoOutlined, Person, PersonOff } from "@mui/icons-material";
 import { useEffect } from "react";
 import { openSnackbar } from "../redux/slice/snackbarSlice";
 import DatePickerField from "../components/dynamicTable/DatePickerField";
@@ -95,11 +95,11 @@ const Users = () => {
         return (
           <>
             <GridActionsCellItem
-              icon={<InfoOutlined color="info" />}
-              label="Info"
+              icon={<Edit color="info" />}
+              label="Edit"
               className="textPrimary"
-              title={"Info"}
-              onClick={() => navigate(`/users/details?email=${row.email}`)}
+              title={"Edit"}
+              onClick={() => navigate(`/users/edit/${row.email}`)}
             />
             <GridActionsCellItem
               icon={
@@ -113,6 +113,13 @@ const Users = () => {
               className="textPrimary"
               title={row.isActivated ? "Dectivate" : "Activate"}
               onClick={() => handleUserStatusChange(row.userId)}
+            />
+            <GridActionsCellItem
+              icon={<InfoOutlined color="info" />}
+              label="Info"
+              className="textPrimary"
+              title={"Info"}
+              onClick={() => navigate(`/users/details?email=${row.email}`)}
             />
           </>
         );

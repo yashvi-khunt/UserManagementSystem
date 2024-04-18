@@ -14,9 +14,10 @@ const FormAutoCompleteField = React.forwardRef(
           field: { onChange, value, ...fieldProps },
           fieldState: { error },
         }) => {
-          const selectedOption = options
-            ? options.find((option) => option.value === value)
-            : null;
+          const selectedOption =
+            defaultValue ||
+            (options ? options.find((option) => option.value === value) : null);
+
           return (
             <Autocomplete
               {...fieldProps}

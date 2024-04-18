@@ -30,6 +30,7 @@ declare namespace authTypes {
   type userDetails = {
     firstName: string | null;
     lastName: string | null;
+    roleId: string | null;
   };
 
   type updateUserProps = {

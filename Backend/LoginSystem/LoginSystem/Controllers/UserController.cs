@@ -45,10 +45,12 @@ namespace LoginSystem.Controllers
             else user = await _userManager.FindByEmailAsync(email);
 
             if (user == null) return NotFound(new Response("User not found", false));
+            var userRole = await _userManager.GetRolesAsync(user);
             var userDetails = new VMUserDetails()
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                RoleId = userRole[0],
             };
             return Ok(userDetails);
         }
@@ -67,17 +69,32 @@ namespace LoginSystem.Controllers
 
 
         [HttpPut("edit")]
-        public async Task<IActionResult> EditUserDetails(VMUpdateUser newModel)
+        public async
+            Task<IActionResult> EditUserDetails(VMUpdateUser newModel)
         {
+            ApplicationUser user;
+            if (User.IsInRole("User") || User.IsInRole("Admin") && newModel.Email == null) { user = await _userManager.GetUserAsync(User); }
+            else user = await _userManager.FindByEmailAsync(newModel.Email);
+
+            if (user == null) return NotFound(new Response("User not found", false));
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                // var user = await _userManager.GetUserAsync(User);
                 if (newModel.FirstName != null) user.FirstName = newModel.FirstName;
                 if (newModel.LastName != null) user.LastName = newModel.LastName;
 
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
+                    if (newModel.RoleId != null)
+                    {
+                        var spParams = new UpdateUserRoleInputModel
+                        {
+                            UserId = user.Id,
+                            RoleId = newModel.RoleId,
+                        };
+                        _procedureManager.ExecStoreProcedure(StoredProcedure.UpdateUserRoles, spParams);
+                    }
                     return Ok(new Response("User updated successfully", true));
                 }
                 else
@@ -228,7 +245,7 @@ namespace LoginSystem.Controllers
                         UserId = user.Id,
                         RoleId = role.Id,
                     };
-                 _procedureManager.ExecStoreProcedure(StoredProcedure.UpdateUserRoles, spParams);
+                    _procedureManager.ExecStoreProcedure(StoredProcedure.UpdateUserRoles, spParams);
                 }
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var pwdToken = await _userManager.GeneratePasswordResetTokenAsync(user);

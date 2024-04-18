@@ -14,12 +14,13 @@ import {
 } from "../components";
 import ResetPassword from "../components/auth/ResetPassword";
 import ProfileEdit from "../components/ProfileEdit";
-import ProfilePage from "../components/ProfilePage";
+import ProfilePage from "../components/ProfilePage.1";
 import EmailConfirmSuccess from "../components/auth/EmailConfirmSuccess";
 import ChangePassword from "../components/ChangePassword";
 import Users from "../pages/Users";
 import LoginHistories from "../pages/LoginHistories";
 import SendEmail from "../components/auth/SendEmail";
+import EditUser from "../components/EditUser";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -78,6 +79,7 @@ const router = createBrowserRouter(
         />
         <Route path="add" element={<AddUser />} />
         <Route path="details" element={<ProfilePage />} />
+        <Route path="edit/:email" element={<EditUser />} />
       </Route>
       <Route
         path="loginHistories"

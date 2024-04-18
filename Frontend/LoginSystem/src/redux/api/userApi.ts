@@ -38,7 +38,7 @@ export const userApi = indexApi.injectEndpoints({
       query: (data) => ({
         url: `User/edit`,
         method: "PUT",
-        body: { firstName: data.firstName, lastName: data.lastName },
+        body: data,
       }),
       invalidatesTags: ["User"],
     }),
