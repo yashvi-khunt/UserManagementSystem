@@ -14,7 +14,7 @@ import {
 } from "../components";
 import ResetPassword from "../components/auth/ResetPassword";
 import ProfileEdit from "../components/ProfileEdit";
-import ProfilePage from "../components/ProfilePage.1";
+import ProfilePage from "../components/ProfilePage";
 import EmailConfirmSuccess from "../components/auth/EmailConfirmSuccess";
 import ChangePassword from "../components/ChangePassword";
 import Users from "../pages/Users";

@@ -21,7 +21,7 @@ import {
   useRolesWithNamesQuery,
 } from "../redux/api/userApi";
 import { openSnackbar } from "../redux/slice/snackbarSlice";
-import FormAutoCompleteField from "./common/form/FormAutpCompleteField";
+import FormAutoCompleteField from "./common/form/FormAutoCompleteField";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const AddUser = () => {
   const { data: roleHelper } = useRolesWithNamesQuery();
   const onSubmit = (data: unknown) => {
     console.log(data);
-    addUserApi(data);
+    //addUserApi({...data,roleId:data.roleId.value});
   };
 
   useEffect(() => {
@@ -112,6 +112,7 @@ const AddUser = () => {
                   options={roleHelper}
                   label="Role"
                   control={control}
+                  defaultValue={roleHelper && roleHelper[0]}
                 />
               </Grid>
             </Grid>

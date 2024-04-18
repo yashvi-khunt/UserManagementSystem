@@ -22,7 +22,7 @@ import {
   useUserDetailsQuery,
 } from "../redux/api/userApi";
 import { openSnackbar } from "../redux/slice/snackbarSlice";
-import FormAutoCompleteField from "./common/form/FormAutpCompleteField";
+import FormAutoCompleteField from "./common/form/FormAutoCompleteField";
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -34,7 +34,8 @@ const EditUser = () => {
 
   const { data: roleHelper } = useRolesWithNamesQuery();
   const onSubmit = (data: unknown) => {
-    editUserApi({ ...data });
+    console.log(data, { ...data, roleId: data.roleId.value });
+    editUserApi({ ...data, roleId: data.roleId.value });
   };
 
   const { data: userDetails } = useUserDetailsQuery(email ?? "");

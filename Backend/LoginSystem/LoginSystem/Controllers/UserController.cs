@@ -86,7 +86,7 @@ namespace LoginSystem.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    if (newModel.RoleId != null)
+                    if (newModel.RoleId != null || newModel.RoleId !="")
                     {
                         var spParams = new UpdateUserRoleInputModel
                         {

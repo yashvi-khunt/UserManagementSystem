@@ -37,7 +37,7 @@ const FormAutoCompleteField = React.forwardRef(
                   helperText={error?.message}
                 />
               )}
-              onChange={(_, data) => onChange(data ? data.value : null)}
+              onChange={(_, data) => onChange(data ? data : null)}
             />
           );
         }}
