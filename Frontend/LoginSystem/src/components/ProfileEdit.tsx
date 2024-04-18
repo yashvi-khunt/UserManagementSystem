@@ -27,6 +27,8 @@ export default function ProfileEdit() {
   const onSubmit = (data: object) => {
     updateApi({
       ...data,
+      roleId: "",
+      email: userEmail,
     } as authTypes.updateUserProps);
   };
 

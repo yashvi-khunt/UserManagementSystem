@@ -46,9 +46,11 @@ const ProfilePage = () => {
     <>
       <Container maxWidth="xl">
         <Box display="flex" gap={2} alignItems="center" mb={2}>
-          <IconButton onClick={() => navigate("/users")}>
-            <KeyboardBackspace />
-          </IconButton>
+          {userEmail ? (
+            <IconButton onClick={() => navigate("/users")}>
+              <KeyboardBackspace />
+            </IconButton>
+          ) : null}
           <Typography variant="h5" ml={-2}>
             {userEmail ? "Employee Profile" : "Profile"}
           </Typography>

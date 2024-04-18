@@ -20,6 +20,7 @@ export const userApi = indexApi.injectEndpoints({
         method: "PUT",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
     getUserList: builder.query<
       ApiTypes.GetUsersProps,
@@ -65,6 +66,7 @@ export const userApi = indexApi.injectEndpoints({
         url: "User/UsersList",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
     updateUserRoles: builder.mutation<
       authTypes.apiResponse,
@@ -82,6 +84,7 @@ export const userApi = indexApi.injectEndpoints({
         url: "User/RoleHelper",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
   }),
 });

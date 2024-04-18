@@ -86,7 +86,7 @@ namespace LoginSystem.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    if (newModel.RoleId != null || newModel.RoleId !="")
+                    if (newModel.RoleId != null && newModel.RoleId !="")
                     {
                         var spParams = new UpdateUserRoleInputModel
                         {
@@ -115,7 +115,7 @@ namespace LoginSystem.Controllers
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
                     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);

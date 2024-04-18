@@ -32,6 +32,7 @@ export const authApi = indexApi.injectEndpoints({
         url: `Auth/confirmUserEmail?UserId=${id}&Token=${token}`,
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
     forgotPassword: builder.mutation<
       authTypes.apiResponse,
@@ -53,6 +54,7 @@ export const authApi = indexApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["User"],
     }),
   }),
 });
