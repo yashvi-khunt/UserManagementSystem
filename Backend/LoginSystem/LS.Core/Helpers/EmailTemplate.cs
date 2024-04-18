@@ -39,5 +39,24 @@ namespace LS.Core.Helpers
                     </html>", userName, resetLink);
             return message.ToString();
         }
+
+        public static string AddUserConfirmationMail(string userName, string confirmationLink)
+        {
+            var message = new StringBuilder();
+            message.AppendFormat(@"
+                    <html>
+                    <head>
+                        <title>Confirmation Mail</title>
+                    </head>
+                    <body>
+                        <p>Hi {0},</p>
+                        <p>In order to start using your new account, you need to confirm your email address.</p>
+                        <p>Please confirm your email by clicking <a href='{1}'>here</a>.</p>
+                        
+                    </body>
+                    </html>", userName, confirmationLink);
+            return message.ToString();
+        }
+
     }
 }

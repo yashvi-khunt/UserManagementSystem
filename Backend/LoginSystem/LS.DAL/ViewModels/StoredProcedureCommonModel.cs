@@ -15,6 +15,6 @@ namespace Alms.DAL.ViewModels
     public class HelperModel
     {
         public string? Label { get; set; }
-        public int? Value { get; set; }
+        public string? Value { get; set; }
     }
 }

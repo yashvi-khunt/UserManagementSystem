@@ -28,8 +28,8 @@ namespace LS.DAL.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4b34900f-460b-4e89-9b9d-916e6982ce3d", null, "User", null },
-                    { "9d436439-0f9f-415a-bc36-2076fb464429", null, "Admin", null }
+                    { "4b34900f-460b-4e89-9b9d-916e6982ce3d", null, "User", "USER" },
+                    { "9d436439-0f9f-415a-bc36-2076fb464429", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(

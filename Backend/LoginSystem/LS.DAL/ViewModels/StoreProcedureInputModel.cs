@@ -21,7 +21,7 @@ namespace Alms.DAL.ViewModels
         public string? Text { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
-
+        public string? UserIds { get; set; }
 
     }
 
@@ -34,6 +34,12 @@ namespace Alms.DAL.ViewModels
 
         public string? ToDate { get; set; }
 
+    }
+
+    public class UpdateUserRoleInputModel
+    {
+        public string UserId { get; set; }
+        public string RoleId { get; set; }
     }
 
 }

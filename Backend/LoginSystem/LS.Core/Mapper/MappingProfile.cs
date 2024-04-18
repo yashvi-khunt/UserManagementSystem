@@ -15,7 +15,8 @@ namespace LS.Core.Mapper
         
             CreateMap<ApplicationUser, VMGetUserList>().ReverseMap();
             CreateMap<LoginHistory,VMGetLoginHistories>().ReverseMap();
-            CreateMap<LoginHistory,VMAddLoginHistory>().ReverseMap();   
+            CreateMap<LoginHistory,VMAddLoginHistory>().ReverseMap();
+           
         }
     }
 }

@@ -19,13 +19,16 @@ namespace LoginSystem.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+       
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
         private readonly ILoginHistoryService _loginHistoryService;
 
-        public AuthController(UserManager<ApplicationUser> userManager, IConfiguration configuration, IEmailService service,ILoginHistoryService loginHistoryService)
+        public AuthController(UserManager<ApplicationUser> userManager,RoleManager<IdentityRole> roleManager, IConfiguration configuration, IEmailService service, ILoginHistoryService loginHistoryService)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _configuration = configuration;
             _emailService = service;
             _loginHistoryService = loginHistoryService;
@@ -51,8 +54,14 @@ namespace LoginSystem.Controllers
                 return StatusCode(StatusCodes.Status403Forbidden, new Response("Email is not confirmed. Please confirm your email before signing in.", false));
             }
 
+            if(!user.IsActivated)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new Response("User not active. Please contact admin.", false));
+            }
+
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+
                 var authClaims = new List<Claim> {
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -85,18 +94,18 @@ namespace LoginSystem.Controllers
                     IpAddress = ipAddress,
                     Browser = browser ?? "",
                     DateTime = DateTime.Now,
-                    Device =  device == "Other" || device is null ?  "" : device,
+                    Device = device == "Other" || device is null ? "" : device,
                     OS = operatingSystem ?? "",
 
                 };
-                
+
                 var response = await _loginHistoryService.AddLoginHistory(vMAddLoginHistory);
                 if (response != null && response.IsValid == true)
                 {
                     // Return a successful response with the generated token and its expiration
                     return StatusCode(200, new Response<string>(token, true, "Logged in successfully!"));
                 }
-                // Return a successful response with the generated token and its expiration
+                //Return a successful response with the generated token and its expiration
                 return StatusCode(200, new Response<string>(token, true, "Logged in successfully! But could not save login history."));
 
             }
@@ -122,6 +131,8 @@ namespace LoginSystem.Controllers
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = false,
+                CreatedDate = DateTime.Now,
+
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -138,6 +149,9 @@ namespace LoginSystem.Controllers
 
             try
             {
+                
+                await _userManager.AddToRoleAsync(user, "User");
+
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 var confirmationLink = Url.Action("ConfirmEmail", "Auth", new { userId = user.Id, token = token }, Request.Scheme);
@@ -183,6 +197,26 @@ namespace LoginSystem.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong", false));
         }
 
+        [HttpGet("confirmAddUserEmail")]
+        public async Task<IActionResult> ConfirmAddUserEmail([FromQuery] VMAddConfirmEmail model)
+        {
+            if (model.UserId == null || model.Token == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response("User or token not found", false));
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+                return StatusCode(StatusCodes.Status404NotFound, new Response("User not found", false));
+
+            //add a step to verify token
+
+            var result = await _userManager.ConfirmEmailAsync(user, model.Token);
+            if (result.Succeeded)
+            {
+                return Redirect($"http://localhost:5173/auth/confirm-email?email={user.Email}&pwd={model.PwdToken}");
+            }
+            else
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response("Something went wrong", false));
+        }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] VMForgotPassword model)
         {
