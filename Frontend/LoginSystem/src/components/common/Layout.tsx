@@ -9,7 +9,7 @@ const Layout = () => {
   const { isVisible, handleClick } = useScrollToTop();
   const location = useLocation();
   const isAuth = location.pathname === URL.AUTH;
-  console.log("layout");
+  //console.log("layout");
   return (
     <>
       <Box sx={{ display: "flex" }}>

@@ -23,7 +23,7 @@ const SideNav = () => {
   const userRole = useAppSelector(
     (state) => state.auth.userData?.role
   ) as Global.Role;
-  console.log(userRole);
+  //  console.log(userRole);
   const handleItemClick = (path: string, index: number) => {
     setSelectedItem(index);
     navigate(path);

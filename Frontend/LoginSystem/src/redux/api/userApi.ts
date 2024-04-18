@@ -2,9 +2,11 @@ import { indexApi } from "./indexApi";
 
 export const userApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
-    userDetails: builder.query<authTypes.userDetails, void>({
-      query: () => ({
-        url: `User/details`,
+    userDetails: builder.query<authTypes.userDetails, string | null>({
+      query: (data) => ({
+        url: `User/details${
+          data === "" || data === null ? "" : `?email=${data}`
+        }`,
         method: "GET",
       }),
       providesTags: ["User"],
@@ -51,6 +53,36 @@ export const userApi = indexApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    toggleUser: builder.mutation<authTypes.apiResponse, string>({
+      query: (data) => ({
+        url: `User/toggle-user-state/${data}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    usersWithNames: builder.query<Global.helperList, void>({
+      query: () => ({
+        url: "User/UsersList",
+        method: "GET",
+      }),
+    }),
+    updateUserRoles: builder.mutation<
+      authTypes.apiResponse,
+      authTypes.UpdateUserRoleParams
+    >({
+      query: (data) => ({
+        url: "User/UpdateUserRole",
+        body: data,
+        method: "PUT",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    rolesWithNames: builder.query<{ label: string; value: string }[], void>({
+      query: () => ({
+        url: "User/RoleHelper",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -60,4 +92,8 @@ export const {
   useGetUserListQuery,
   useEditUserMutation,
   useAddUserMutation,
+  useToggleUserMutation,
+  useUsersWithNamesQuery,
+  useRolesWithNamesQuery,
+  useUpdateUserRolesMutation,
 } = userApi;

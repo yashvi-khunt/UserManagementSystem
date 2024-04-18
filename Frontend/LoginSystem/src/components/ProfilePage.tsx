@@ -12,13 +12,25 @@ import {
 import { useUserDetailsQuery } from "../redux/api/userApi";
 // import { useAppSelector } from "../redux/hooks";
 import { Edit } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../redux/hooks";
+import { set } from "react-hook-form";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  // const userEmail = useAppSelector((state) => state.auth.userData?.email);
+  const [userEmail, setUserEmail] = useState<null | string>(null);
+  const [searchParams] = useSearchParams();
+  //const userEmail = useAppSelector((state) => state.auth.userData?.email);
   //console.log(userEmail);
-  const { data: userDetails } = useUserDetailsQuery();
+  const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
+
+  useEffect(() => {
+    const email = searchParams.get("email");
+    if (email !== null || email !== "") {
+      setUserEmail(email);
+    }
+  }, []);
 
   const firstNameInitial = userDetails?.firstName
     ? userDetails?.firstName[0]
@@ -57,18 +69,20 @@ const ProfilePage = () => {
                       overlap="circular"
                       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                       badgeContent={
-                        <Edit
-                          sx={{
-                            border: "5px solid white",
-                            backgroundColor: "#ff558f",
-                            borderRadius: "50%",
-                            padding: ".2rem",
-                            width: 35,
-                            height: 35,
-                            ":hover": { cursor: "pointer" },
-                          }}
-                          onClick={() => navigate("/profile/edit")}
-                        ></Edit>
+                        !userEmail ? (
+                          <Edit
+                            sx={{
+                              border: "5px solid white",
+                              backgroundColor: "#ff558f",
+                              borderRadius: "50%",
+                              padding: ".2rem",
+                              width: 35,
+                              height: 35,
+                              ":hover": { cursor: "pointer" },
+                            }}
+                            onClick={() => navigate("/profile/edit")}
+                          ></Edit>
+                        ) : null
                       }
                     >
                       <Avatar
@@ -98,9 +112,11 @@ const ProfilePage = () => {
                 <Grid item sx={{ p: "1.5rem 0rem", textAlign: "center" }}>
                   <Grid item>No user details present.</Grid>
                   <Grid item>
-                    <Link href="/profile/edit">
-                      Click here to add profile details.
-                    </Link>
+                    {!userEmail && (
+                      <Link href="/profile/edit">
+                        Click here to add profile details.
+                      </Link>
+                    )}
                   </Grid>
                 </Grid>
               )}

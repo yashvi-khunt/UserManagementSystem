@@ -22,11 +22,13 @@ const AutoCompleteField = ({
     _: SyntheticEvent<Element, Event>,
     newValue: Global.Option[] | Global.Option | null
   ) => {
+    console.log(newValue);
     const selectedValue = multiple
       ? (newValue as Global.Option[] | null)
       : newValue
       ? [newValue as Global.Option]
       : null;
+    console.log(selectedValue);
     setValue(selectedValue);
 
     const param = new URLSearchParams(searchParams);
@@ -42,15 +44,22 @@ const AutoCompleteField = ({
 
   useEffect(() => {
     if (!searchParams.get(paramKey)) return;
+    var selectedOptions;
+    if (paramKey === "UserIds") {
+      const ids = searchParams.get(paramKey)?.split(",");
+      selectedOptions = options.filter((option) => ids?.includes(option.value));
+    } else {
+      const ids = searchParams
+        .get(paramKey)
+        ?.split(",")
+        .map((param) => parseInt(param));
 
-    const ids = searchParams
-      .get(paramKey)
-      ?.split(",")
-      .map((param) => parseInt(param));
+      selectedOptions = options.filter((option) =>
+        ids?.includes(option.value as number)
+      );
+    }
 
-    const selectedOptions = options.filter((option) =>
-      ids?.includes(option.value as number)
-    );
+    console.log(selectedOptions, options);
 
     setValue(multiple ? selectedOptions : selectedOptions[0]);
   }, [searchParams, options, multiple, paramKey]);

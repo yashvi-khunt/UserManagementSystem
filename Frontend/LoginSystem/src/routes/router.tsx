@@ -77,6 +77,7 @@ const router = createBrowserRouter(
           }
         />
         <Route path="add" element={<AddUser />} />
+        <Route path="details" element={<ProfilePage />} />
       </Route>
       <Route
         path="loginHistories"

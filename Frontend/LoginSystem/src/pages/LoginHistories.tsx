@@ -13,6 +13,10 @@ import { useAppSelector } from "../redux/hooks";
 import Table from "../components/dynamicTable/DynamicTable";
 
 import { useGetLoginHistoriesQuery } from "../redux/api/loginHistory";
+import AutoCompleteField from "../components/dynamicTable/AutoCompleteField";
+import DatePickerField from "../components/dynamicTable/DatePickerField";
+import { useUsersWithNamesQuery } from "../redux/api/userApi";
+import SearchField from "../components/dynamicTable/SearchField";
 
 const LoginHistories = () => {
   const [searchParams] = useSearchParams();
@@ -20,6 +24,8 @@ const LoginHistories = () => {
   const { data } = useGetLoginHistoriesQuery({
     ...Object.fromEntries(searchParams.entries()),
   });
+
+  const { data: userDD } = useUsersWithNamesQuery();
 
   const userRole = useAppSelector((state) => state.auth.userData?.role);
 
@@ -42,6 +48,7 @@ const LoginHistories = () => {
       renderCell: ({ row }: GridRenderCellParams) =>
         dayjs(row.dateTime).format("h:mm A"),
       width: 150,
+      sortable: false,
     },
     {
       field: "ipAddress",
@@ -98,15 +105,24 @@ const LoginHistories = () => {
               gap: "10px",
             }}
           >
-            {/* {userRole !== "User" && (
-							<Box sx={{ width: "100%" }}>
-								<AutoCompleteField
-									options={employeeDD?.data || []}
-									label='User'
-									multiple
-								/>
-							</Box>
-						)} */}
+            {userRole !== "User" && (
+              <Box sx={{ width: "100%" }}>
+                <AutoCompleteField
+                  options={userDD?.data || []}
+                  label="User"
+                  multiple
+                />
+              </Box>
+            )}
+            <Box sx={{ width: "100%" }}>
+              <SearchField label="Search Text" placeholder="Enter text" />
+            </Box>
+            <Box sx={{ width: "100%" }}>
+              <DatePickerField label="From" />
+            </Box>
+            <Box sx={{ width: "100%" }}>
+              <DatePickerField to label="To" />
+            </Box>
           </Box>
         </Table>
       </Container>

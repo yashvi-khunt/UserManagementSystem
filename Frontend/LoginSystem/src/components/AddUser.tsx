@@ -1,5 +1,6 @@
 import { ArrowBack, KeyboardBackspace } from "@mui/icons-material";
 import {
+  Autocomplete,
   Box,
   Button,
   Container,
@@ -7,15 +8,20 @@ import {
   IconButton,
   Link,
   Paper,
+  TextField,
   Typography,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { FormInputText } from ".";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useAddUserMutation } from "../redux/api/userApi";
+import {
+  useAddUserMutation,
+  useRolesWithNamesQuery,
+} from "../redux/api/userApi";
 import { openSnackbar } from "../redux/slice/snackbarSlice";
+import FormAutoCompleteField from "./common/form/FormAutpCompleteField";
 
 const AddUser = () => {
   const navigate = useNavigate();
@@ -24,9 +30,10 @@ const AddUser = () => {
   const [addUserApi, { data, error }] = useAddUserMutation();
   const dispatch = useDispatch();
 
+  const { data: roleHelper } = useRolesWithNamesQuery();
   const onSubmit = (data: unknown) => {
-    console.log(data as authTypes.forgotPasswordParams);
-    addUserApi(data as authTypes.forgotPasswordParams);
+    console.log(data);
+    addUserApi(data);
   };
 
   useEffect(() => {
@@ -51,6 +58,7 @@ const AddUser = () => {
         })
       );
   }, [error?.data]);
+  console.log(roleHelper);
 
   return (
     <>
@@ -95,6 +103,15 @@ const AddUser = () => {
                     },
                   })}
                   label="Email"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormAutoCompleteField
+                  name="roleId"
+                  options={roleHelper}
+                  label="Role"
+                  control={control}
                 />
               </Grid>
             </Grid>

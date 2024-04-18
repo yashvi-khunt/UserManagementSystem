@@ -3,15 +3,26 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRenderCellParams,
+  GridRowId,
   GridValidRowModel,
 } from "@mui/x-data-grid";
-import { useGetUserListQuery } from "../redux/api/userApi";
+import {
+  useGetUserListQuery,
+  useToggleUserMutation,
+  useUsersWithNamesQuery,
+} from "../redux/api/userApi";
 import dayjs from "dayjs";
-import { Box, Button, Container, Typography } from "@mui/material";
+import { Avatar, Box, Button, Container, Typography } from "@mui/material";
 import { URL } from "../utils/constants/URLConstants";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import Table from "../components/dynamicTable/DynamicTable";
 import AutoCompleteField from "../components/dynamicTable/AutoCompleteField";
+import { InfoOutlined, Person, PersonOff } from "@mui/icons-material";
+import { useEffect } from "react";
+import { openSnackbar } from "../redux/slice/snackbarSlice";
+import DatePickerField from "../components/dynamicTable/DatePickerField";
+import StatusComponent from "../components/dynamicTable/StatusComponent";
+import SearchField from "../components/dynamicTable/SearchField";
 
 const Users = () => {
   const [searchParams] = useSearchParams();
@@ -19,6 +30,7 @@ const Users = () => {
   const { data } = useGetUserListQuery({
     ...Object.fromEntries(searchParams.entries()),
   });
+  const { data: userDD } = useUsersWithNamesQuery();
 
   const userRole = useAppSelector((state) => state.auth.userData?.role);
 
@@ -43,11 +55,16 @@ const Users = () => {
       field: "userName",
       headerName: "User Name",
       width: 150,
+      sortable: false,
     },
     {
       field: "role",
       headerName: "Role",
       width: 150,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams) => (
+        <StatusComponent type="leave" {...params} />
+      ),
     },
     {
       field: "createdDate",
@@ -66,29 +83,58 @@ const Users = () => {
           return "Deactive";
         }
       },
+      sortable: false,
     },
-    // {
-    //   field: "actions",
-    //   type: "actions",
-    //   headerName: "Actions",
-    //   width: 100,
-    //   renderCell: (params) => (
-    //     <>
-    //       <GridActionsCellItem
-    //         icon={<EditIcon />}
-    //         label="Edit"
-    //         className="textPrimary"
-    //         onClick={() => handleEdit(params.row.employeeId)}
-    //       />
-    //       <GridActionsCellItem
-    //         icon={<DeleteIcon />}
-    //         label="Delete"
-    //         onClick={() => handleDelete(params)}
-    //       />
-    //     </>
-    //   ),
-    // },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      renderCell: ({ row }) => {
+        // console.log(row);
+        return (
+          <>
+            <GridActionsCellItem
+              icon={<InfoOutlined color="info" />}
+              label="Info"
+              className="textPrimary"
+              title={"Info"}
+              onClick={() => navigate(`/users/details?email=${row.email}`)}
+            />
+            <GridActionsCellItem
+              icon={
+                !row.isActivated ? (
+                  <Person color={"primary"} />
+                ) : (
+                  <PersonOff color={"primary"} />
+                )
+              }
+              label="Edit"
+              className="textPrimary"
+              title={row.isActivated ? "Dectivate" : "Activate"}
+              onClick={() => handleUserStatusChange(row.userId)}
+            />
+          </>
+        );
+      },
+    },
   ];
+
+  const [toggleApi, { data: toggleData, error: toggleError }] =
+    useToggleUserMutation();
+
+  const handleUserStatusChange = (id: GridRowId) => {
+    console.log(id);
+    toggleApi(id as string);
+  };
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    toggleData?.success &&
+      dispatch(
+        openSnackbar({ severity: "success", message: toggleData.message })
+      );
+  }, [toggleData?.data]);
 
   const pageInfo: DynamicTable.TableProps = {
     columns: columns,
@@ -125,15 +171,24 @@ const Users = () => {
               gap: "10px",
             }}
           >
-            {/* {userRole !== "User" && (
-							<Box sx={{ width: "100%" }}>
-								<AutoCompleteField
-									options={employeeDD?.data || []}
-									label='User'
-									multiple
-								/>
-							</Box>
-						)} */}
+            {userRole !== "User" && (
+              <Box sx={{ width: "100%" }}>
+                <AutoCompleteField
+                  options={userDD?.data || []}
+                  label="User"
+                  multiple
+                />
+              </Box>
+            )}
+            <Box sx={{ width: "100%" }}>
+              <SearchField label="Search Text" placeholder="Enter text" />
+            </Box>
+            <Box sx={{ width: "100%" }}>
+              <DatePickerField label="From" />
+            </Box>
+            <Box sx={{ width: "100%" }}>
+              <DatePickerField to label="To" />
+            </Box>
           </Box>
         </Table>
       </Container>

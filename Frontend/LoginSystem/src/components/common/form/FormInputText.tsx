@@ -3,11 +3,11 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 
 const FormInputText = React.forwardRef(
-  ({ name, control, label, value }: FormTypes.FormInputProps, ref) => {
+  ({ name, control, label, defaultValue }: FormTypes.FormInputProps, ref) => {
     return (
       <Controller
         name={name}
-        defaultValue={value}
+        defaultValue={defaultValue}
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <TextField

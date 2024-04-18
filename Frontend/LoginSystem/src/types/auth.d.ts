@@ -36,4 +36,9 @@ declare namespace authTypes {
     firstName?: string;
     lastName?: string;
   };
+
+  type UpdateUserRoleParams = {
+    userId: string;
+    roleId: string;
+  };
 }

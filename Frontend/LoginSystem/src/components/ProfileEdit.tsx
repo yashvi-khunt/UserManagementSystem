@@ -21,8 +21,8 @@ export default function ProfileEdit() {
   const [updateApi, { data: updateResponse, error }] = useEditUserMutation();
   const dispatch = useAppDispatch();
 
-  // const userEmail = useAppSelector((state) => state.auth.userData?.email);
-  const { data: userDetails } = useUserDetailsQuery();
+  const userEmail = useAppSelector((state) => state.auth.userData?.email);
+  const { data: userDetails } = useUserDetailsQuery(userEmail ?? "");
 
   const onSubmit = (data: object) => {
     updateApi({
@@ -41,6 +41,7 @@ export default function ProfileEdit() {
       navigate("/profile");
     }
   }, [updateResponse?.data]);
+  console.log(userDetails?.firstName, userDetails?.lastName);
 
   return (
     <Container maxWidth="xs">
@@ -69,30 +70,34 @@ export default function ProfileEdit() {
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormInputText
-                control={control}
-                value={userDetails?.firstName}
-                {...register("firstName", {
-                  pattern: {
-                    value: /^[a-zA-Z]*$/,
-                    message: "Name should contain alphabets only.",
-                  },
-                })}
-                label="First name"
-              />
+              {userDetails && (
+                <FormInputText
+                  control={control}
+                  defaultValue={userDetails?.firstName}
+                  {...register("firstName", {
+                    pattern: {
+                      value: /^[a-zA-Z]*$/,
+                      message: "Name should contain alphabets only.",
+                    },
+                  })}
+                  label="First name"
+                />
+              )}
             </Grid>
             <Grid item xs={12}>
-              <FormInputText
-                control={control}
-                value={userDetails?.lastName}
-                {...register("lastName", {
-                  pattern: {
-                    value: /^[a-zA-Z]*$/,
-                    message: "Name should contain alphabets only.",
-                  },
-                })}
-                label="Last name"
-              />
+              {userDetails && (
+                <FormInputText
+                  control={control}
+                  defaultValue={userDetails?.lastName}
+                  {...register("lastName", {
+                    pattern: {
+                      value: /^[a-zA-Z]*$/,
+                      message: "Name should contain alphabets only.",
+                    },
+                  })}
+                  label="Last name"
+                />
+              )}
             </Grid>
 
             {error && (
