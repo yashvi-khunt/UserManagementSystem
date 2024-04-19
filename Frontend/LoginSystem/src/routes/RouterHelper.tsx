@@ -56,7 +56,7 @@ export const routerHelper: Global.RouteConfig = [
     ],
   },
   {
-    name: "Login History",
+    name: "Login Histories",
     path: "/loginHistories",
     element: <LoginHistories />,
     roles: ["Admin", "User"],

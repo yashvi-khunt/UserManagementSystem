@@ -72,7 +72,7 @@ const EditUser = () => {
             <KeyboardBackspace />
           </IconButton>
           <Typography variant="h5" ml={-2}>
-            Edit Employee
+            Edit User
           </Typography>
         </Box>
         <Container

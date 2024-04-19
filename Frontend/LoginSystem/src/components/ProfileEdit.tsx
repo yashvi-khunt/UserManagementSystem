@@ -54,7 +54,7 @@ export default function ProfileEdit() {
             <KeyboardBackspace />
           </IconButton>
           <Typography variant="h5" ml={-2}>
-            Edit Employee
+            Edit Profile
           </Typography>
         </Box>
         <Container

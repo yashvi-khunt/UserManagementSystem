@@ -33,7 +33,7 @@ const SearchField = ({ label, placeholder }: DynamicTable.SearchField) => {
   useEffect(() => {
     if (!searchParams.get(paramKey)) return;
 
-    console.log(searchParams?.get(paramKey));
+    // console.log(searchParams?.get(paramKey));
     const searchText = searchParams?.get(paramKey);
     setValue(searchText);
   }, [searchParams, paramKey]);

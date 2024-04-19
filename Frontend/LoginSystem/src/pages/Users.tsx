@@ -12,7 +12,14 @@ import {
   useUsersWithNamesQuery,
 } from "../redux/api/userApi";
 import dayjs from "dayjs";
-import { Avatar, Box, Button, Container, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { URL } from "../utils/constants/URLConstants";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import Table from "../components/dynamicTable/DynamicTable";
@@ -170,33 +177,26 @@ const Users = () => {
           ) : null}
         </Box>
         <Table {...pageInfo}>
-          <Box
-            sx={{
-              paddingBottom: 2,
-              display: "flex",
-              justifyContent: "space-between",
-              gap: "10px",
-            }}
-          >
+          <Grid container spacing={2} paddingBottom={2}>
             {userRole !== "User" && (
-              <Box sx={{ width: "100%" }}>
+              <Grid item xs={6} md={3}>
                 <AutoCompleteField
                   options={userDD?.data || []}
                   label="User"
                   multiple
                 />
-              </Box>
+              </Grid>
             )}
-            <Box sx={{ width: "100%" }}>
+            <Grid item xs={6} md={3}>
               <SearchField label="Search Text" placeholder="Enter text" />
-            </Box>
-            <Box sx={{ width: "100%" }}>
+            </Grid>
+            <Grid item xs={6} md={3}>
               <DatePickerField label="From" />
-            </Box>
-            <Box sx={{ width: "100%" }}>
+            </Grid>
+            <Grid item xs={6} md={3}>
               <DatePickerField to label="To" />
-            </Box>
-          </Box>
+            </Grid>
+          </Grid>
         </Table>
       </Container>
     </>

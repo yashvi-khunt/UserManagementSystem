@@ -62,14 +62,15 @@ const ChangePassword = () => {
           Change Password
         </Typography>
       </Box>
-
-      <Box
+      <Container
         sx={{
-          marginTop: 16,
+          marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          width: "100%",
         }}
+        maxWidth="xs"
       >
         <Box
           component="form"
@@ -143,7 +144,7 @@ const ChangePassword = () => {
             </Grid>
           </Grid>
         </Box>
-      </Box>
+      </Container>
     </Container>
   );
 };
