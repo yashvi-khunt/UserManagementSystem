@@ -14,8 +14,13 @@ const Layout = () => {
   const isLoggedIn = useAppSelector((state) => state.auth.status);
   const navigate = useNavigate();
   useEffect(() => {
+    console.log(location);
     if (isLoggedIn) {
-      navigate("/profile");
+      if (location.pathname === "/") {
+        navigate("/profile");
+      } else {
+        navigate(location.pathname);
+      }
     } else {
       navigate("/auth/login");
     }

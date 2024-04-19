@@ -1,4 +1,4 @@
-import { ArrowBack, Key } from "@mui/icons-material";
+import { ArrowBack, Key, KeyboardBackspace } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -6,6 +6,7 @@ import {
   Container,
   CssBaseline,
   Grid,
+  IconButton,
   Link,
   Typography,
 } from "@mui/material";
@@ -52,8 +53,16 @@ const ChangePassword = () => {
   }, [data?.data, error?.data]);
 
   return (
-    <Container maxWidth="xs">
-      <CssBaseline />
+    <Container maxWidth="xl">
+      <Box display="flex" gap={2} alignItems="center" mb={2}>
+        <IconButton onClick={() => navigate("/profile")}>
+          <KeyboardBackspace />
+        </IconButton>
+        <Typography variant="h5" ml={-2}>
+          Change Password
+        </Typography>
+      </Box>
+
       <Box
         sx={{
           marginTop: 16,
@@ -62,14 +71,6 @@ const ChangePassword = () => {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "#f8f5fe", width: 60, height: 60 }}>
-          <Avatar sx={{ m: 1, bgcolor: "#f5ecfe" }}>
-            <Key htmlColor="#7d56d4" />
-          </Avatar>
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Change Password
-        </Typography>
         <Box
           component="form"
           noValidate

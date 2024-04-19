@@ -44,7 +44,7 @@ export const routerHelper: Global.RouteConfig = [
     children: [
       { path: URL.ADD, element: <AddUser />, roles: ["Admin"] },
       {
-        path: URL.EDIT + ":email",
+        path: URL.EDIT + "/:email",
         element: <EditUser />,
         roles: ["Admin"],
       },

@@ -23,7 +23,7 @@ const ProfilePage = () => {
   const [searchParams] = useSearchParams();
   //const userEmail = useAppSelector((state) => state.auth.userData?.email);
   //console.log(userEmail);
-
+  const navigate = useNavigate();
   const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
 
   useEffect(() => {
