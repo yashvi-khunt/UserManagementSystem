@@ -33,7 +33,7 @@ const AddUser = () => {
   const { data: roleHelper } = useRolesWithNamesQuery();
   const onSubmit = (data: unknown) => {
     console.log(data);
-    //addUserApi({...data,roleId:data.roleId.value});
+    addUserApi({ ...data, roleId: data.roleId.value });
   };
 
   useEffect(() => {

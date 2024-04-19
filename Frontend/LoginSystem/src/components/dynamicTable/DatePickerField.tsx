@@ -39,20 +39,6 @@ const DatePickerField = ({
         })
       );
       setValue(dayjs(null));
-    } else if (to && !fromDate.isValid() && value !== null) {
-      console.log(defaultValue);
-      dispatch(
-        openSnackbar({
-          severity: "warning",
-          message: "Please enter a From date",
-        })
-      );
-      param.delete(paramKey);
-
-      if (value) {
-        param.append(paramKey, dayjs(value).format("YYYY/MM/DD"));
-      }
-      setSearchParams(param);
     } else if (!to && toDate && value && value.isAfter(toDate, "day")) {
       dispatch(
         openSnackbar({

@@ -132,7 +132,7 @@ namespace LoginSystem.Controllers
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = false,
                 CreatedDate = DateTime.Now,
-
+                IsActivated = true
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

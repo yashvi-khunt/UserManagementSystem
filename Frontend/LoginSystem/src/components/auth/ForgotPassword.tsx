@@ -37,12 +37,13 @@ export default function Login() {
 
   useEffect(() => {
     // console.log(error?.data.message);
-    dispatch(
-      openSnackbar({
-        severity: "error",
-        message: error?.data.message,
-      })
-    );
+    if (error?.data && !error?.success)
+      dispatch(
+        openSnackbar({
+          severity: "error",
+          message: error?.data.message,
+        })
+      );
   }, [error?.data]);
 
   return (
