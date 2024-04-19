@@ -1,15 +1,25 @@
 import { Box, Fab, Fade, Toolbar } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import useScrollToTop from "../../hooks/useScrollToTop";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { URL } from "../../utils/constants/URLConstants";
 import Header from "../../pages/Header";
+import { useAppSelector } from "../../redux/hooks";
+import { useEffect } from "react";
 
 const Layout = () => {
   const { isVisible, handleClick } = useScrollToTop();
   const location = useLocation();
-  const isAuth = location.pathname === URL.AUTH;
-  //console.log("layout");
+  const isAuth = location.pathname.includes(URL.AUTH);
+  const isLoggedIn = useAppSelector((state) => state.auth.status);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/profile");
+    } else {
+      navigate("/auth/login");
+    }
+  }, []);
   return (
     <>
       <Box sx={{ display: "flex" }}>

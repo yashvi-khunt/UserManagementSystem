@@ -92,7 +92,10 @@ const Header = () => {
           </Typography>
 
           <Box>
-            <Avatar sx={{ ml: 2 }} onClick={handleAvatarMenuOpen}>
+            <Avatar
+              sx={{ ml: 2, ":hover": { cursor: "pointer" } }}
+              onClick={handleAvatarMenuOpen}
+            >
               {user?.email.slice(0, 1).toUpperCase()}
             </Avatar>
             <Menu

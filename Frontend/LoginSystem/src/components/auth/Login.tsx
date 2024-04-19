@@ -34,7 +34,7 @@ export default function Login() {
   useEffect(() => {
     if (loginResponse?.success) {
       dispatch(login(loginResponse.data));
-      navigate("/profile");
+      navigate("/");
     }
   }, [loginResponse]);
 

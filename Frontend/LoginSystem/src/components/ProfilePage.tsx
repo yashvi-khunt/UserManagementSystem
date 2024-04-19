@@ -19,11 +19,11 @@ import { useAppSelector } from "../redux/hooks";
 import { set } from "react-hook-form";
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<null | string>(null);
   const [searchParams] = useSearchParams();
   //const userEmail = useAppSelector((state) => state.auth.userData?.email);
   //console.log(userEmail);
+
   const { data: userDetails } = useUserDetailsQuery(userEmail ? userEmail : "");
 
   useEffect(() => {

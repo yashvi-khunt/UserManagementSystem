@@ -39,16 +39,8 @@ const LoginHistories = () => {
       field: "date",
       headerName: "Date",
       renderCell: ({ row }: GridRenderCellParams) =>
-        dayjs(row.dateTime).format("DD/MM/YYYY"),
-      width: 150,
-    },
-    {
-      field: "time",
-      headerName: "Time",
-      renderCell: ({ row }: GridRenderCellParams) =>
-        dayjs(row.dateTime).format("h:mm A"),
-      width: 150,
-      sortable: false,
+        dayjs(row.dateTime).format("DD/MM/YYYY HH:mm A"),
+      width: 200,
     },
     {
       field: "ipAddress",

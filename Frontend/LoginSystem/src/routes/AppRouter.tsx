@@ -7,6 +7,7 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
+  useNavigate,
 } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { login } from "../redux/slice/authSlice";
@@ -20,6 +21,7 @@ const AppRouter = () => {
   ) as Global.Role;
 
   console.log(userRole);
+  useEffect(() => {}, []);
 
   const [isInitialized, setIsInitialized] = useState(false);
   useEffect(() => {
@@ -49,14 +51,7 @@ const AppRouter = () => {
   }
 
   const routes = createRoutesFromElements(
-    <Route
-      path="/"
-      element={
-        <Protected>
-          <Layout />
-        </Protected>
-      }
-    >
+    <Route path="/">
       {authRoutes.map((route) => {
         if (route.children && route.children.length > 0) {
           const childRoutes = route.children.map((childRoute) => (
@@ -78,35 +73,37 @@ const AppRouter = () => {
           );
         }
       })}
-      {routerHelper
-        .filter((route) => route.roles?.includes(userRole))
-        .map((route) => {
-          if (route.children && route.children.length > 0) {
-            const childRoutes = route.children
-              .filter((route) => route.roles.includes(userRole))
-              .map((childRoute) => (
+      <Route path="/" element={<Layout />}>
+        {routerHelper
+          .filter((route) => route.roles?.includes(userRole))
+          .map((route) => {
+            if (route.children && route.children.length > 0) {
+              const childRoutes = route.children
+                .filter((route) => route.roles.includes(userRole))
+                .map((childRoute) => (
+                  <Route
+                    key={childRoute.path}
+                    path={childRoute.path}
+                    element={childRoute.element}
+                  />
+                ));
+              return (
+                <Route key={route.path} path={route.path} element={<Outlet />}>
+                  <Route path="" element={route.element} />
+                  {childRoutes}
+                </Route>
+              );
+            } else {
+              return (
                 <Route
-                  key={childRoute.path}
-                  path={childRoute.path}
-                  element={childRoute.element}
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
                 />
-              ));
-            return (
-              <Route key={route.path} path={route.path} element={<Outlet />}>
-                <Route path="" element={route.element} />
-                {childRoutes}
-              </Route>
-            );
-          } else {
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={route.element}
-              />
-            );
-          }
-        })}
+              );
+            }
+          })}
+      </Route>
     </Route>
   );
   const router = createBrowserRouter(routes);

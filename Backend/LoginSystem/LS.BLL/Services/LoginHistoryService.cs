@@ -39,8 +39,8 @@ namespace LS.BLL.Services
 
                 Page = getLoginHistoryInputModel.Page,
                 PageSize = getLoginHistoryInputModel.PageSize,
-                Field = getLoginHistoryInputModel.Field,
-                Sort = getLoginHistoryInputModel.Sort,
+                Field = getLoginHistoryInputModel.Field == "" ? "date" : getLoginHistoryInputModel.Field,
+                Sort = getLoginHistoryInputModel.Sort == "" ? "desc" : getLoginHistoryInputModel.Sort    ,
                 Text = getLoginHistoryInputModel.Text ?? "",
                 ToDate = getLoginHistoryInputModel.ToDate ?? "",
                 FromDate = getLoginHistoryInputModel.FromDate ?? "",

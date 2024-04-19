@@ -149,8 +149,8 @@ namespace LoginSystem.Controllers
 
                 Page = getUsersInputModel.Page,
                 PageSize = getUsersInputModel.PageSize,
-                Field = getUsersInputModel.Field,
-                Sort = getUsersInputModel.Sort,
+                Field = getUsersInputModel.Field == "" ? "createdDate" : getUsersInputModel.Field,
+                Sort = getUsersInputModel.Sort == ""? "desc" : getUsersInputModel.Sort,
                 Text = getUsersInputModel.Text ?? "",
                 ToDate = getUsersInputModel.ToDate ?? "",
                 FromDate = getUsersInputModel.FromDate ?? "",

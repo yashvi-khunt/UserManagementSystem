@@ -99,12 +99,13 @@ namespace LoginSystem.Controllers
 
                 };
 
-                var response = await _loginHistoryService.AddLoginHistory(vMAddLoginHistory);
-                if (response != null && response.IsValid == true)
-                {
-                    // Return a successful response with the generated token and its expiration
-                    return StatusCode(200, new Response<string>(token, true, "Logged in successfully!"));
-                }
+                //var response = await _loginHistoryService.AddLoginHistory(vMAddLoginHistory);
+                //if (response != null && response.IsValid == true)
+                //{
+                //    // Return a successful response with the generated token and its expiration
+                //    return StatusCode(200, new Response<string>(token, true, "Logged in successfully!"));
+                //}
+
                 //Return a successful response with the generated token and its expiration
                 return StatusCode(200, new Response<string>(token, true, "Logged in successfully! But could not save login history."));
 

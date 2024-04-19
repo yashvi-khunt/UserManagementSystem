@@ -30,7 +30,7 @@ const FormInputPassword = React.forwardRef(
                     onClick={() => setShowPassword(!showPassword)}
                     edge="end"
                   >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                    {!showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               ),
