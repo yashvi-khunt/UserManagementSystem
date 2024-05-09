@@ -1,7 +1,7 @@
 USE [login-system]
 GO
 
-/****** Object:  StoredProcedure [dbo].[usp_GetUsersWithNames]    Script Date: 17-04-2024 23:44:09 ******/
+/****** Object:  StoredProcedure [dbo].[usp_GetUsersWithNames]    Script Date: 09-05-2024 11:17:11 ******/
 SET ANSI_NULLS ON
 GO
 

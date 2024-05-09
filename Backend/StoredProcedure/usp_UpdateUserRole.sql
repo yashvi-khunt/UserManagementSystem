@@ -1,7 +1,7 @@
 USE [login-system]
 GO
 
-/****** Object:  StoredProcedure [dbo].[usp_UpdateUserRole]    Script Date: 18-04-2024 10:24:27 ******/
+/****** Object:  StoredProcedure [dbo].[usp_UpdateUserRole]    Script Date: 09-05-2024 11:17:20 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -18,11 +18,23 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	UPDATE AspNetUserRoles
-	SET RoleId = @RoleId WHERE UserId=@UserId
+      IF NOT EXISTS (SELECT 1 FROM AspNetUserRoles WHERE UserId = @UserId)
+    BEGIN
+        -- Insert statement if UserId doesn't exist
+        INSERT INTO AspNetUserRoles (UserId, RoleId)
+        VALUES (@UserId, @RoleId)
 
-	select 1 as IsValid, 'Record Updated Successfully!' as Message
+        SELECT 1 AS IsValid, 'Record Inserted Successfully!' AS Message
+    END
+    ELSE
+    BEGIN
+        -- Update statement if UserId exists
+        UPDATE AspNetUserRoles
+        SET RoleId = @RoleId
+        WHERE UserId = @UserId
+
+        SELECT 1 AS IsValid, 'Record Updated Successfully!' AS Message
+    END
 END
 GO
 

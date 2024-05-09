@@ -3,7 +3,6 @@ import {
   ChangePassword,
   EmailConfirmSuccess,
   ForgotPassword,
-  Layout,
   Login,
   ProfileEdit,
   ProfilePage,

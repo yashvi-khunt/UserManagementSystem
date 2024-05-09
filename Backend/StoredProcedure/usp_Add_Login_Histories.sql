@@ -1,7 +1,7 @@
 USE [login-system]
 GO
 
-/****** Object:  StoredProcedure [dbo].[usp_Add_Login_Histories]    Script Date: 16-04-2024 12:39:28 ******/
+/****** Object:  StoredProcedure [dbo].[usp_Add_Login_Histories]    Script Date: 09-05-2024 11:14:34 ******/
 SET ANSI_NULLS ON
 GO
 
